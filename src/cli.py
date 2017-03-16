@@ -58,7 +58,7 @@ def committer_stats():
     results = execute_command("git shortlog -sn --all")
 
     commits_per_author = {}
-    print "Number of commits per author: "
+    print "Percentage of commits per author: "
     for i in range(0, len(results)):
         commits_per_author[results[i].strip().split('\t', 1)[1]] = results[i].strip().split('\t', 1)[0]
 
@@ -66,6 +66,23 @@ def committer_stats():
         percentage = float(commits_per_author[i]) / float(commits) * 100
         print i, ": ", round(percentage, 2), "%"
 
+def branch_stats():
+    # Number of branches (local)
+    localB = execute_command("git branch")
+    print "Number of branches (local): ", len(localB)
+
+
+    # Number of branches (remote)
+    remoteB = execute_command("git branch -r")
+    print "Number of branches (remote): ", len(remoteB) - 1
+    print
+
+    # Number of commits per branch (remote)
+    print "Number of commits per branch: "
+    for i in range(1, len(remoteB)):
+        result = execute_command("git rev-list --count" + remoteB[i])
+        print remoteB[i].strip(), ": ", int(result[0])
+    print
 
 def main():
     repo_path = sys.argv[1]
@@ -79,6 +96,8 @@ def main():
 
     committer_stats()
     print
+
+    branch_stats()
 
 
 if __name__ == "__main__":
