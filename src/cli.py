@@ -78,10 +78,18 @@ def branch_stats():
     print
 
     # Number of commits per branch (remote)
-    print "Number of commits per branch: "
+    print "Number of commits per remote branch: "
     for i in range(1, len(remoteB)):
         result = execute_command("git rev-list --count" + remoteB[i])
         print remoteB[i].strip(), ": ", int(result[0])
+    print
+
+    # Number of commits per branch (local)
+    print "Number of commits per local branch: "
+    for i in range(0, len(localB)):
+        # Remove star character for edited local branches
+        result = execute_command("git rev-list --count " + localB[i].strip('* '))
+        print localB[i].strip(), ": ", int(result[0])
     print
 
 def main():
