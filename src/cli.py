@@ -3,6 +3,8 @@ import sys
 import re
 import subprocess
 
+from datetime import datetime
+
 
 def execute_command(command):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).stdout
@@ -134,6 +136,42 @@ def branch_stats():
             name = res.strip()[1:].strip()
             percentage = float(commits) / float(branch_total_commits) * 100
             print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
+    print
+
+
+    # Get mean commit's rate per day, week and month
+    print "Commit rates per day, week and month: "
+    print
+    # Find earliest commit.
+    earliest_commit = execute_command("git rev-list --max-parents=0 HEAD")
+    earliest_commit = execute_command("git show -s --format=%ci " + earliest_commit[0].strip())[0].strip()
+
+    # Calculate days since then.
+    date_format = "%Y-%m-%d"
+    first_commit_date = datetime.strptime(earliest_commit.split(" ")[0], date_format)
+    today = datetime.now()
+
+    days = today - first_commit_date
+    days = days.days
+
+    results = execute_command("git shortlog -sn --all")
+
+    for res in results:
+        res = res.strip()
+        commits = res[0]
+        res = res[1:]
+        name = res.strip()
+        print name + " " + str(round(float(commits)/float(days), 3)) + " commits per day."
+        # A week is 7 days.
+        print name + " " + str(round(float(commits) / float(days) * 7, 3)) + " commits per week."
+        # A month is 30.
+        print name + " " + str(round(float(commits) / float(days) * 30, 3)) + " commits per month."
+        print
+    print
+
+
+
+
 
 
 
