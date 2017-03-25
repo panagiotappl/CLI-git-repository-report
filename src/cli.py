@@ -2,8 +2,11 @@ import os
 import sys
 import re
 import subprocess
-
 from datetime import datetime
+from output import generate_output
+
+
+
 
 
 def execute_command(command):
@@ -12,6 +15,11 @@ def execute_command(command):
     process.close()
 
     return result
+
+
+def repo_name():
+    results = execute_command("git rev-parse --show-toplevel")
+    return results[0]
 
 
 def number_of_files():
@@ -34,6 +42,7 @@ def committer_stats():
     """
     Generates and prints commiter's stats.
     """
+    com_stats = dict()
     results = execute_command("git log --all --format='%aN' | sort -u")
 
     commiters = []
@@ -41,13 +50,17 @@ def committer_stats():
         commiters.append(results[j].decode("utf-8", "replace").strip())
     print "Number of committers: ", len(commiters)
 
+    com_stats["committers"] = len(commiters)
     # Number of commits
     result = execute_command("git shortlog --all | grep -E '^[ ]+\w+' | wc -l")
 
     commits = result[0]
+    com_stats["commits"] = commits
     print "Number of commits: ", commits
     print
 
+    com_adds = dict()
+    com_dels = dict()
     # Number of insertions/deletions per committer
     print "Number of insertions/deletions per committer:"
     for j in range(0, len(commiters)):
@@ -60,54 +73,79 @@ def committer_stats():
                 adds += int(am.group())
             if dm is not None:
                 dels += int(dm.group())
-
+        com_adds[commiters[j]] = adds
+        com_dels[commiters[j]] = dels
         print commiters[j], ": ", adds, " insertions (+), ", dels, " deletions(-)"
     print
+    com_stats["adds"] = com_adds
+    com_stats["dels"] = com_dels
 
     # Percentage of commits per author.
     results = execute_command("git shortlog -sn --all")
 
-    commits_per_author = {}
+    commits_per_author = dict()
     print "Percentage of commits per author: "
     for i in range(0, len(results)):
         commits_per_author[results[i].strip().split('\t', 1)[1]] = results[i].strip().split('\t', 1)[0]
 
+    com_stats["com_per_author"] = commits_per_author
     for i in commits_per_author:
         percentage = float(commits_per_author[i]) / float(commits) * 100
         # Print readable percentage per author.
         print i, ": ", round(percentage, 2), "%"
 
+    return com_stats
+
+
 def branch_stats():
     """
     Generates and prints branches stats.
     """
+
+    br_stats = dict()
+
+    # Number of tags
+    tags = execute_command("git tag")
+    br_stats["tags"] = len(tags)
     # Number of branches (local).
     localB = execute_command("git branch")
     print "Number of branches (local): ", len(localB)
-
 
     # Number of branches (remote).
     remoteB = execute_command("git branch -r")
     print "Number of branches (remote): ", len(remoteB) - 1
     print
 
+    br_stats["localCount"] = len(localB)
+    br_stats["remoteCount"] = len(remoteB)
+    br_stats["localB"] = localB
+    br_stats["remoteB"] = remoteB
+
+    com_branchR = dict()
     # Number of commits per branch (remote).
     print "Number of commits per remote branch: "
     # Ignore first element (HEAD pointer).
     for i in range(1, len(remoteB)):
         result = execute_command("git rev-list --count" + remoteB[i])
+        com_branchR[remoteB[i].strip()] = int(result[0])
         print remoteB[i].strip(), ": ", int(result[0])
     print
 
+    br_stats["com_branchR"] = com_branchR
+
+    com_branchL = dict()
     # Number of commits per branch (local)
     print "Number of commits per local branch: "
     for i in range(0, len(localB)):
         # Remove star character for edited local branches
         result = execute_command("git rev-list --count " + localB[i].strip('* '))
+        com_branchL[localB[i].strip()] = int(result[0])
         print localB[i].strip(), ": ", int(result[0])
     print
 
+    br_stats["com_branchL"] = com_branchL
 
+    com_br_authR = dict()
     # Commit percentage per branch per author (remote)
     # Ignore first element (HEAD pointer).
     print "Commits per remote branch per author:\n"
@@ -119,10 +157,13 @@ def branch_stats():
             commits = res.strip()[0]
             name = res.strip()[1:].strip()
             percentage = float(commits) / float(branch_total_commits) * 100
+            com_br_authR[branch.strip()] = [name, percentage]
             print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
     print
 
+    br_stats["com_br_authR"] = com_br_authR
 
+    com_br_authL = dict()
     # Commit percentage per branch per author (local)
     # Ignore first element (HEAD pointer).
     print "Commits per local branch per author:\n"
@@ -135,10 +176,13 @@ def branch_stats():
             commits = res.strip()[0]
             name = res.strip()[1:].strip()
             percentage = float(commits) / float(branch_total_commits) * 100
+            com_br_authL[branch.strip()] = [name, percentage]
             print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
     print
 
+    br_stats["com_br_authL"] = com_br_authL
 
+    com_rates = dict()
     # Get mean commit's rate per day, week and month
     print "Commit rates per day, week and month: "
     print
@@ -161,7 +205,9 @@ def branch_stats():
         commits = res[0]
         res = res[1:]
         name = res.strip()
-        print name + " " + str(round(float(commits)/float(days), 3)) + " commits per day."
+        com_rates[name] = [round(float(commits) / float(days)), round(float(commits) / float(days) * 7, 3),
+                           round(float(commits) / float(days) * 30, 3)]
+        print name + " " + str(round(float(commits) / float(days), 3)) + " commits per day."
         # A week is 7 days.
         print name + " " + str(round(float(commits) / float(days) * 7, 3)) + " commits per week."
         # A month is 30.
@@ -169,26 +215,31 @@ def branch_stats():
         print
     print
 
+    br_stats["com_rates"] = com_rates
 
-
-
-
+    return br_stats
 
 
 def main():
     repo_path = sys.argv[1]
+    output_path = sys.argv[2]
+
     os.chdir(repo_path)
 
-    file_count = number_of_files()
-    print "Number of files: ", file_count
+    statistics = dict()
 
-    line_count_total = number_of_lines()
-    print "Total number of lines: ", line_count_total
+    statistics["gitname"] = repo_name()
 
-    committer_stats()
-    print
+    statistics["file_count"] = number_of_files()
 
-    branch_stats()
+    statistics["line_count_total"] = number_of_lines()
+
+    statistics["com_stats"] = committer_stats()
+
+    statistics["br_stats"] = branch_stats()
+
+    generate_output(statistics, output_path)
+    print statistics
 
 
 if __name__ == "__main__":
