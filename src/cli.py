@@ -215,7 +215,7 @@ def branch_stats():
         res = res.split('\t')
         commits = res[0]
         name = res[1]
-        com_rates[name] = [round(float(commits) / float(days)), round(float(commits) / float(days) * 7, 3),
+        com_rates[name] = [round(float(commits) / float(days), 3), round(float(commits) / float(days) * 7, 3),
                            round(float(commits) / float(days) * 30, 3)]
         print name + " " + str(round(float(commits) / float(days), 3)) + " commits per day."
         # A week is 7 days.
