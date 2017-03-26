@@ -375,7 +375,7 @@ def generate_output(statistics, path):
     remoteB = statistics["br_stats"]["remoteB"]
     for i in range(0, len(remoteB)):
         output_html += "<tr>\n"
-        output_html += "<td>" + remoteB[i] + "</td>\n"
+        output_html += "<td><a href=\"#" + remoteB[i] + "\">" + remoteB[i] + "</a></td>\n"
         output_html += "<td>" + "some date" + "</td>\n"
         output_html += "<td>" + "some date" + "</td>\n"
         output_html += "</tr>\n"
@@ -401,7 +401,7 @@ def generate_output(statistics, path):
     localB = statistics["br_stats"]["localB"]
     for i in range(0, len(localB)):
         output_html += "<tr>\n"
-        output_html += "<td>" + localB[i] + "</td>\n"
+        output_html += "<td><a href=\"#" + localB[i] + "\" >" + localB[i] + "</a></td>\n"
         output_html += "<td>" + "some date" + "</td>\n"
         output_html += "<td>" + "some date" + "</td>\n"
         output_html += "</tr>\n"
