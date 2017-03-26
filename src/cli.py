@@ -34,8 +34,12 @@ def number_of_lines():
     :return: returns number of lines of git-included files
     """
     # xargs to uild and execute wc from standard input.
-    results = execute_command("git ls-files | xargs wc -l")
-    return results[len(results) - 1].strip().split(' ', 1)[0]
+    results = execute_command("git diff --stat 4b825dc642cb6eb9a060e54bf8d69288fbee4904")
+    lines = 0
+    for file in results:
+        t = int(re.findall(" /|\s+(\d+)\s+", file)[0])
+        lines += t
+    return lines
 
 
 def committer_stats():
@@ -43,18 +47,24 @@ def committer_stats():
     Generates and prints commiter's stats.
     """
     com_stats = dict()
-    results = execute_command("git log --all --format='%aN' | sort -u")
+    results = execute_command("git log --all --format='%aN'")
+    results = map(str.strip, results)
+    results.sort()
+    results = set(results)
 
     commiters = []
-    for j in range(0, len(results)):
-        commiters.append(results[j].decode("utf-8", "replace").strip())
+    for commiter in results:
+        commiters.append(commiter.decode("utf-8", "replace").strip())
     print "Number of committers: ", len(commiters)
 
     com_stats["committers"] = len(commiters)
     # Number of commits
-    result = execute_command("git shortlog --all | grep -E '^[ ]+\w+' | wc -l")
+    # result = execute_command("git shortlog --all | grep -E '^[ ]+\w+' | wc -l")
+    result = execute_command(" git shortlog --all -s")
+    commits = 0
+    for author in result:
+        commits += int(re.findall("\s(\d+)\t", author)[0])
 
-    commits = result[0]
     com_stats["commits"] = commits
     print "Number of commits: ", commits
     print
