@@ -132,7 +132,9 @@ def branch_stats():
     br_stats["localCount"] = len(localB)
     br_stats["remoteCount"] = len(remoteB)
     br_stats["localB"] = localB
-    br_stats["remoteB"] = remoteB
+    br_stats["remoteB"] = remoteB[1:]
+    br_stats['branch_dates_remote'] = {}
+    br_stats['branch_dates_local'] = {}
 
     com_branchR = dict()
     # Number of commits per branch (remote).
@@ -142,7 +144,14 @@ def branch_stats():
         result = execute_command("git rev-list --count" + remoteB[i])
         com_branchR[remoteB[i].strip()] = int(result[0])
         print remoteB[i].strip(), ": ", int(result[0])
+        # Also get branch dates
+        res = execute_command("git reflog --pretty='%cd' " + remoteB[i])
+        if res:
+            br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
+        else:
+            br_stats['branch_dates_remote'][remoteB[i].strip()] = [0,0]
     print
+
 
     br_stats["com_branchR"] = com_branchR
 
@@ -154,6 +163,12 @@ def branch_stats():
         result = execute_command("git rev-list --count " + localB[i].strip('* '))
         com_branchL[localB[i].strip()] = int(result[0])
         print localB[i].strip(), ": ", int(result[0])
+        # Also get branch dates
+        res = execute_command("git reflog --pretty='%cd' " + localB[i].strip('* '))
+        if res:
+            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
+        else:
+            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [0, 0]
     print
 
     br_stats["com_branchL"] = com_branchL
