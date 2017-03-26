@@ -13,6 +13,7 @@ def generate_output(statistics, path):
     output_html += "integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">\n"
     output_html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>"
     output_html += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n"
+    output_html += "<script src=\"https://d3js.org/d3.v4.min.js\"></script>"
 
     output_html += "</head>\n"
     output_html += "<style>\n"
@@ -238,6 +239,18 @@ def generate_output(statistics, path):
         output_html += "<td>" + str(value) + "%</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
+
+    # import plotly.offline as ply
+    # ply.init_notebook_mode()
+    #
+    # fig = {
+    #     'data': [{'labels': com_auth.keys(),
+    #               'values': com_auth.values(),
+    #               'type': 'pie'}],
+    #     'layout': {'title': 'Percentage of commits per author'}
+    # }
+    # print ply.plot(fig)
+
 
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Average commits</h2>\n"
