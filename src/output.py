@@ -179,10 +179,10 @@ def generate_branch_history(path, branch_history, type):
         output_html += " <tbody>\n"
         for j in range(0, len(value)):
             output_html += "<tr>\n"
-            output_html += "<td>" + value[j][0] + "</td>\n"
-            output_html += "<td>" + value[j][1] + "</td>\n"
-            output_html += "<td>" + value[j][2] + "</td>\n"
-            output_html += "<td>" + value[j][3] + "</td>\n"
+            output_html += "<td>" + value[j]["id"] + "</td>\n"
+            output_html += "<td>" + value[j]["message"] + "</td>\n"
+            output_html += "<td>" + value[j]["date"] + "</td>\n"
+            output_html += "<td>" + value[j]["author"] + "</td>\n"
             output_html += "</tr>\n"
         output_html += "</tbody>\n</table>\n</div>\n"
 

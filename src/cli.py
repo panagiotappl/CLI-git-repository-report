@@ -4,10 +4,7 @@ import re
 import subprocess
 from datetime import datetime
 from output import generate_output
-
-
-
-
+from itertools import izip
 
 def execute_command(command):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).stdout
@@ -15,6 +12,11 @@ def execute_command(command):
     process.close()
 
     return result
+
+
+def grouped(iterable, n):
+    "s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
+    return izip(*[iter(iterable)]*n)
 
 
 def repo_name():
@@ -135,6 +137,8 @@ def branch_stats():
     br_stats["remoteB"] = remoteB[1:]
     br_stats['branch_dates_remote'] = {}
     br_stats['branch_dates_local'] = {}
+    br_stats['branch_stats_local'] = {}
+    br_stats['branch_stats_remote'] = {}
 
     com_branchR = dict()
     # Number of commits per branch (remote).
@@ -150,6 +154,22 @@ def branch_stats():
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
         else:
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [0,0]
+        # Also get branches logs
+        res = execute_command('git log ' + remoteB[i].strip() + ' --pretty="tformat:\"%h@@@%ad@@@%s%d@@@%an\"" --graph --date=short')
+        br_stats['branch_stats_remote'][remoteB[i].strip()] = []
+        for commit in res[:1]:
+            commit = commit[2:]
+            data = commit.split("@@@")
+            br_stats['branch_stats_remote'][remoteB[i].strip()].append(
+                {
+                    'id': data[0],
+                    'message': data[2],
+                    'date': data[1],
+                    'author': data[3].strip()
+
+                }
+            )
+
     print
 
 
@@ -169,6 +189,21 @@ def branch_stats():
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
         else:
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [0, 0]
+        # Also get branches logs
+        res = execute_command('git log ' + localB[i].strip('* \n') + ' --pretty="tformat:\"%h@@@%ad@@@%s%d@@@%an\"" --graph --date=short')
+        br_stats['branch_stats_local'][localB[i].strip('* \n')] = []
+        for commit in res[:1]:
+            commit = commit[2:]
+            data = commit.split("@@@")
+            br_stats['branch_stats_local'][localB[i].strip('* \n')].append(
+                {
+                    'id': data[0],
+                    'message': data[2],
+                    'date': data[1],
+                    'author': data[3].strip()
+
+                }
+            )
     print
 
     br_stats["com_branchL"] = com_branchL
