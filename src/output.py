@@ -373,11 +373,12 @@ def generate_output(statistics, path):
         Remote Branches with dates go here.
     """
     remoteB = statistics["br_stats"]["remoteB"]
+    br_stats = statistics["br_stats"]
     for i in range(0, len(remoteB)):
         output_html += "<tr>\n"
         output_html += "<td><a href=\"#" + remoteB[i] + "\">" + remoteB[i] + "</a></td>\n"
-        output_html += "<td>" + "some date" + "</td>\n"
-        output_html += "<td>" + "some date" + "</td>\n"
+        output_html += "<td>" + str(br_stats['branch_dates_remote'][remoteB[i].strip()][0]) + "</td>\n"
+        output_html += "<td>" + str(br_stats['branch_dates_remote'][remoteB[i].strip()][1]) + "</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody></table></div>\n"
 
@@ -402,8 +403,8 @@ def generate_output(statistics, path):
     for i in range(0, len(localB)):
         output_html += "<tr>\n"
         output_html += "<td><a href=\"#" + localB[i] + "\" >" + localB[i] + "</a></td>\n"
-        output_html += "<td>" + "some date" + "</td>\n"
-        output_html += "<td>" + "some date" + "</td>\n"
+        output_html += "<td>" + str(br_stats['branch_dates_local'][localB[i].strip('* \n')][0]) + "</td>\n"
+        output_html += "<td>" + str(br_stats['branch_dates_local'][localB[i].strip('* \n')][1]) + "</td>\n"
         output_html += "</tr>\n"
 
     output_html += "</tbody></table></div></div>\n"

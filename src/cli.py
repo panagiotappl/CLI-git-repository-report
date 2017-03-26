@@ -98,6 +98,9 @@ def committer_stats():
     for i in range(0, len(results)):
         commits_per_author[results[i].strip().split('\t', 1)[1]] = results[i].strip().split('\t', 1)[0]
 
+    for author in commits_per_author:
+        commits_per_author[author] =  round(float(commits_per_author[author]) / float(commits) * 100, 2)
+
     com_stats["com_per_author"] = commits_per_author
     for i in commits_per_author:
         percentage = float(commits_per_author[i]) / float(commits) * 100
@@ -129,7 +132,9 @@ def branch_stats():
     br_stats["localCount"] = len(localB)
     br_stats["remoteCount"] = len(remoteB)
     br_stats["localB"] = localB
-    br_stats["remoteB"] = remoteB
+    br_stats["remoteB"] = remoteB[1:]
+    br_stats['branch_dates_remote'] = {}
+    br_stats['branch_dates_local'] = {}
 
     com_branchR = dict()
     # Number of commits per branch (remote).
@@ -139,7 +144,14 @@ def branch_stats():
         result = execute_command("git rev-list --count" + remoteB[i])
         com_branchR[remoteB[i].strip()] = int(result[0])
         print remoteB[i].strip(), ": ", int(result[0])
+        # Also get branch dates
+        res = execute_command("git reflog --pretty='%cd' " + remoteB[i])
+        if res:
+            br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
+        else:
+            br_stats['branch_dates_remote'][remoteB[i].strip()] = [0,0]
     print
+
 
     br_stats["com_branchR"] = com_branchR
 
@@ -151,6 +163,12 @@ def branch_stats():
         result = execute_command("git rev-list --count " + localB[i].strip('* '))
         com_branchL[localB[i].strip()] = int(result[0])
         print localB[i].strip(), ": ", int(result[0])
+        # Also get branch dates
+        res = execute_command("git reflog --pretty='%cd' " + localB[i].strip('* '))
+        if res:
+            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
+        else:
+            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [0, 0]
     print
 
     br_stats["com_branchL"] = com_branchL
@@ -212,10 +230,10 @@ def branch_stats():
 
     for res in results:
         res = res.strip()
+        res = res.split('\t')
         commits = res[0]
-        res = res[1:]
-        name = res.strip()
-        com_rates[name] = [round(float(commits) / float(days)), round(float(commits) / float(days) * 7, 3),
+        name = res[1]
+        com_rates[name] = [round(float(commits) / float(days), 3), round(float(commits) / float(days) * 7, 3),
                            round(float(commits) / float(days) * 30, 3)]
         print name + " " + str(round(float(commits) / float(days), 3)) + " commits per day."
         # A week is 7 days.
