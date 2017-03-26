@@ -1,16 +1,14 @@
-
-def generate_output(statistics, path):
+def generate_head(title, index):
     output_html = ""
     output_html += "<!DOCTYPE html>\n"
     output_html += "<html lang=\"en\">\n"
     output_html += "<head>\n"
     output_html += "<meta charset=\"UTF-8\">\n"
-    output_html += "<title>Git statistics</title>\n"
+    output_html += "<title>" + title + "</title>\n"
     output_html += "<meta charset=\"utf-8\">\n"
     output_html += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
 
     output_html += "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n"
-    output_html += "integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">\n"
     output_html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>"
     output_html += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n"
 
@@ -82,13 +80,18 @@ def generate_output(statistics, path):
     output_html += "      border-color: transparent;\n"
     output_html += "      color: #fff !important;\n"
     output_html += "  }\n"
-    output_html += "    .container-fluid{\n"
-    output_html += "        margin-left: 25%;\n"
-    output_html += "        margin-right: 25%;\n"
-
-    output_html += "        padding: 60px 50px;\n"
-    output_html += "    }\n"
-
+    if index:
+        output_html += "    .container-fluid{\n"
+        output_html += "        margin-left: 25%;\n"
+        output_html += "        margin-right: 25%;\n"
+        output_html += "        padding: 60px 50px;\n"
+        output_html += "    }\n"
+    else:
+        output_html += "    .container-fluid{\n"
+        output_html += "        margin-left: 5%;\n"
+        output_html += "        margin-right: 5%;\n"
+        output_html += "        padding: 60px 50px;\n"
+        output_html += "    }\n"
     output_html += "    .stat{\n"
     output_html += "        font-size: 32px;\n"
     output_html += "    }\n"
@@ -147,6 +150,52 @@ def generate_output(statistics, path):
     output_html += "    }\n"
 
     output_html += "</style>"
+
+    return output_html
+
+
+def generate_branch_history(path, branch_history, type):
+    for key, value in branch_history.iteritems():
+        output_html = generate_head(key, False)
+
+        output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
+        output_html += "<div id=\"general\" class=\"container-fluid cont2\" align=\"middle\">\n"
+        output_html += "    <div class=\"row \">\n"
+        output_html += "        <h2><a href=\"index.html#branches\"><i class=\"fa fa-arrow-circle-left\" aria-hidden=\"true\"> Go Back</i></a></h2>"
+        output_html += "    </div>"
+        output_html += "    <div class=\"row \">\n"
+        output_html += "        <h1>" + key.strip('* \n').split("/")[-1] + "</h1>\n"
+        output_html += "    </div\n>"
+        output_html += "    <div class=\"row\">\n"
+        output_html += "         <table class=\"table table-striped\">\n"
+        output_html += "    <thead >\n"
+        output_html += "      <tr>\n"
+        output_html += "        <th class=\"header bgbrown\" >Commit id</th>\n"
+        output_html += "        <th class=\"header bgbrown\" >Commit message</th>\n"
+        output_html += "        <th class=\"header bgbrown\" >Date</th>\n"
+        output_html += "        <th class=\"header bgbrown\" >Author</th>\n"
+        output_html += "      </tr>\n"
+        output_html += "    </thead>\n"
+        output_html += " <tbody>\n"
+        for j in range(0, len(value)):
+            output_html += "<tr>\n"
+            output_html += "<td>" + value[j][0] + "</td>\n"
+            output_html += "<td>" + value[j][1] + "</td>\n"
+            output_html += "<td>" + value[j][2] + "</td>\n"
+            output_html += "<td>" + value[j][3] + "</td>\n"
+            output_html += "</tr>\n"
+        output_html += "</tbody>\n</table>\n</div>\n"
+
+        output_html += "</body>\n"
+        output_html += "</html>\n"
+
+        f = open(path + "/" + key.strip('* \n').split("/")[-1] + "_" + type + ".html", 'w')
+        f.write(output_html)
+        f.close()
+
+
+def generate_output(statistics, path):
+    output_html = generate_head("Git Statistics", True)
     output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
     output_html += "<nav class=\"navbar navbar-default navbar-fixed-top\">\n"
     output_html += "  <div class=\"container\">\n"
@@ -283,8 +332,8 @@ def generate_output(statistics, path):
     for key, value in adds.iteritems():
         output_html += "<tr>\n"
         output_html += "<td>" + key.encode('utf-8').strip() + "</td>\n"
-        output_html += "<td>" + str(adds[key]) + " (+)</td>\n"
-        output_html += "<td>" + str(dels[key]) + " (-)</td>\n"
+        output_html += "<td>" + str(adds[key]/statistics["com_stats"]["commits"]) + " (+)</td>\n"
+        output_html += "<td>" + str(dels[key]/statistics["com_stats"]["commits"]) + " (-)</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
 
@@ -376,7 +425,7 @@ def generate_output(statistics, path):
     br_stats = statistics["br_stats"]
     for i in range(0, len(remoteB)):
         output_html += "<tr>\n"
-        output_html += "<td><a href=\"#" + remoteB[i] + "\">" + remoteB[i] + "</a></td>\n"
+        output_html += "<td><a href=\"" + remoteB[i].split("/")[-1] + "_remote.html\">" + remoteB[i] + "</a></td>\n"
         output_html += "<td>" + str(br_stats['branch_dates_remote'][remoteB[i].strip()][0]) + "</td>\n"
         output_html += "<td>" + str(br_stats['branch_dates_remote'][remoteB[i].strip()][1]) + "</td>\n"
         output_html += "</tr>\n"
@@ -402,7 +451,7 @@ def generate_output(statistics, path):
     localB = statistics["br_stats"]["localB"]
     for i in range(0, len(localB)):
         output_html += "<tr>\n"
-        output_html += "<td><a href=\"#" + localB[i] + "\" >" + localB[i] + "</a></td>\n"
+        output_html += "<td><a href=\"" + localB[i].strip('* \n').split("/")[-1] + "_local.html\" >" + localB[i] + "</a></td>\n"
         output_html += "<td>" + str(br_stats['branch_dates_local'][localB[i].strip('* \n')][0]) + "</td>\n"
         output_html += "<td>" + str(br_stats['branch_dates_local'][localB[i].strip('* \n')][1]) + "</td>\n"
         output_html += "</tr>\n"
@@ -436,3 +485,8 @@ def generate_output(statistics, path):
     f = open(path + "/index.html", 'w')
     f.write(output_html)
     f.close()
+    branch_stats_local = statistics["br_stats"]["branch_stats_local"]
+    branch_stats_remote = statistics["br_stats"]["branch_stats_remote"]
+
+    generate_branch_history(path, branch_stats_local, "local")
+    generate_branch_history(path, branch_stats_remote, "remote")
