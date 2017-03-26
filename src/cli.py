@@ -212,9 +212,9 @@ def branch_stats():
 
     for res in results:
         res = res.strip()
+        res = res.split('\t')
         commits = res[0]
-        res = res[1:]
-        name = res.strip()
+        name = res[1]
         com_rates[name] = [round(float(commits) / float(days)), round(float(commits) / float(days) * 7, 3),
                            round(float(commits) / float(days) * 30, 3)]
         print name + " " + str(round(float(commits) / float(days), 3)) + " commits per day."
