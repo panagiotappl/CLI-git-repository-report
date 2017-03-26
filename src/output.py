@@ -258,9 +258,9 @@ def generate_output(statistics, path):
     for key, value in com_rates.iteritems():
         output_html += "<tr>\n"
         output_html += "<td>" + key + "</td>\n"
-        output_html += "<td>" + str(value[0]) + "%</td>\n"
-        output_html += "<td>" + str(value[1]) + "%</td>\n"
-        output_html += "<td>" + str(value[2]) + "%</td>\n"
+        output_html += "<td>" + str(value[0]) + "</td>\n"
+        output_html += "<td>" + str(value[1]) + "</td>\n"
+        output_html += "<td>" + str(value[2]) + "</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
 
