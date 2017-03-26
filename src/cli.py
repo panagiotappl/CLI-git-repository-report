@@ -98,6 +98,9 @@ def committer_stats():
     for i in range(0, len(results)):
         commits_per_author[results[i].strip().split('\t', 1)[1]] = results[i].strip().split('\t', 1)[0]
 
+    for author in commits_per_author:
+        commits_per_author[author] =  round(float(commits_per_author[author]) / float(commits) * 100, 2)
+
     com_stats["com_per_author"] = commits_per_author
     for i in commits_per_author:
         percentage = float(commits_per_author[i]) / float(commits) * 100
