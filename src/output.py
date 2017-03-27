@@ -251,7 +251,7 @@ def generate_output(statistics, path):
     output_html += "    <div class=\"row\">\n"
     output_html += "        <div class=\"col-md-4\">\n"
     output_html += "             <div  id=\"p5\" class=\"panel panel-default bgbrown\"><div class=\"stat\">" + \
-                   str(statistics["br_stats"]["tags"]) + " </div> Tags </div>\n"
+                   str(statistics["br_stats"]["tags"]) + " </div> Tags Count </div>\n"
     output_html += "        </div>\n"
     output_html += "         <div class=\"col-md-4\">"
     output_html += "             <div  id=\"p6\" class=\"panel panel-default bgtan\"><div class=\"stat\">" + \
