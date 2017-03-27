@@ -11,6 +11,7 @@ def generate_head(title, index):
     output_html += "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n"
     output_html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>"
     output_html += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n"
+    output_html += "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"
 
     output_html += "</head>\n"
     output_html += "<style>\n"
@@ -287,6 +288,24 @@ def generate_output(statistics, path):
         output_html += "<td>" + str(value) + "%</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
+
+    import plotly.offline as ply
+    from plotly.graph_objs import Layout
+
+    ply.init_notebook_mode()
+
+    layout = Layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+
+    fig = {
+     'data': [{'labels': com_auth.keys(),
+     'values': com_auth.values(),
+     'type': 'pie'}],
+     'layout': layout
+     }
+    output_html += ply.plot(fig, include_plotlyjs=False, output_type='div')
 
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Average commits</h2>\n"
