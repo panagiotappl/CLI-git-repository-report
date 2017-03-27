@@ -220,7 +220,7 @@ def generate_output(statistics, path):
     output_html += "<div class=\"jumbotron text-center\">\n"
     output_html += "  <h1>Git Repository Report</h1>\n"
     output_html += "<p>for\n"
-    output_html += "    <h2>" + statistics["gitname"] + "</h2>\n"
+    output_html += "    <h2>" + statistics["gitname"].rsplit('/', 1)[-1] + "</h2>\n"
 
     output_html += "</p>\n"
     output_html += "</div>\n"
