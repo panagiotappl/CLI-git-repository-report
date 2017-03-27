@@ -155,10 +155,10 @@ def branch_stats():
         else:
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [0,0]
         # Also get branches logs
-        res = execute_command('git log ' + remoteB[i].strip() + ' --pretty="tformat:\"%h@@@%ad@@@%s%d@@@%an\"" --graph --date=short')
+        res = execute_command('git log ' + remoteB[i].strip() + ' --pretty="tformat:\"%h@@@%ad@@@%s%d@@@%an\"" --date=short')
         br_stats['branch_stats_remote'][remoteB[i].strip()] = []
-        for commit in res[:1]:
-            commit = commit[2:]
+        for commit in res:
+            commit = commit[1:].strip()
             data = commit.split("@@@")
             br_stats['branch_stats_remote'][remoteB[i].strip()].append(
                 {
@@ -169,7 +169,6 @@ def branch_stats():
 
                 }
             )
-
     print
 
 
@@ -190,10 +189,10 @@ def branch_stats():
         else:
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [0, 0]
         # Also get branches logs
-        res = execute_command('git log ' + localB[i].strip('* \n') + ' --pretty="tformat:\"%h@@@%ad@@@%s%d@@@%an\"" --graph --date=short')
+        res = execute_command('git log ' + localB[i].strip('* \n') + ' --pretty="tformat:\"%h@@@%ad@@@%s%d@@@%an\"" --date=short')
         br_stats['branch_stats_local'][localB[i].strip('* \n')] = []
-        for commit in res[:1]:
-            commit = commit[2:]
+        for commit in res:
+            commit = commit[1:].strip()
             data = commit.split("@@@")
             br_stats['branch_stats_local'][localB[i].strip('* \n')].append(
                 {
