@@ -215,11 +215,12 @@ def branch_stats():
         branch_total_commits = execute_command("git rev-list --count " + branch)[0].strip()
         result = execute_command("git shortlog -sn " + branch)
         print branch.strip() + ": "
+        com_br_authR[branch.strip()] = []
         for res in result:
-            commits = res.strip()[0]
-            name = res.strip()[1:].strip()
+            commits = res.split()[0]
+            name = res.split()[1]
             percentage = float(commits) / float(branch_total_commits) * 100
-            com_br_authR[branch.strip()] = [name, percentage]
+            com_br_authR[branch.strip()].append([name, percentage])
             print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
     print
 
@@ -234,11 +235,12 @@ def branch_stats():
         branch_total_commits = execute_command("git rev-list --count " + branch)[0].strip()
         result = execute_command("git shortlog -sn " + branch)
         print branch.strip() + ": "
+        com_br_authL[branch.strip()] = []
         for res in result:
-            commits = res.strip()[0]
-            name = res.strip()[1:].strip()
+            commits = res.split()[0]
+            name = res.split()[1]
             percentage = float(commits) / float(branch_total_commits) * 100
-            com_br_authL[branch.strip()] = [name, percentage]
+            com_br_authL[branch.strip()].append([name, percentage])
             print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
     print
 

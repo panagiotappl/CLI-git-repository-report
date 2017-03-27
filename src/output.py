@@ -379,24 +379,47 @@ def generate_output(statistics, path):
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Percentage of commits per author per branch</h2>\n"
     output_html += "    </div>\n"
+
     output_html += "    <div class=\"row\">\n"
     output_html += "         <table class=\"table table-striped\">\n"
     output_html += "    <thead >\n"
     output_html += "      <tr>\n"
-    output_html += "        <th class=\"header bglightteal\" >Remote Branch</th>\n"
+    output_html += "        <th class=\"header bglightteal\" >Local Branch</th>\n"
     output_html += "        <th class=\"header bglightteal\" >Author</th>\n"
     output_html += "        <th class=\"header bglightteal\" >% of commits</th>\n"
     output_html += "      </tr>\n"
     output_html += "    </thead>\n"
     output_html += " <tbody>\n"
 
+    com_br_authL = statistics["br_stats"]["com_br_authL"]
+    for key, value in com_br_authL.iteritems():
+        for commiter in value:
+            output_html += "<tr>\n"
+            output_html += "<td>" + key + "</td>\n"
+            output_html += "<td>" + str(commiter[0]) + "</td>\n"
+            output_html += "<td>" + str(commiter[1]) + "%</td>\n"
+            output_html += "</tr>\n"
+    output_html += "</tbody>\n</table>\n</div>"#</div>\n"
+
+    output_html += "    <div class=\"row\">\n"
+    output_html += "         <table class=\"table table-striped\">\n"
+    output_html += "    <thead >\n"
+    output_html += "      <tr>\n"
+    output_html += "        <th class=\"header bgbrown\" >Remote Branch</th>\n"
+    output_html += "        <th class=\"header bgbrown\" >Author</th>\n"
+    output_html += "        <th class=\"header bgbrown\" >% of commits</th>\n"
+    output_html += "      </tr>\n"
+    output_html += "    </thead>\n"
+    output_html += " <tbody>\n"
+
     com_br_authR = statistics["br_stats"]["com_br_authR"]
     for key, value in com_br_authR.iteritems():
-        output_html += "<tr>\n"
-        output_html += "<td>" + key + "</td>\n"
-        output_html += "<td>" + str(value[0]) + "</td>\n"
-        output_html += "<td>" + str(value[1]) + "%</td>\n"
-        output_html += "</tr>\n"
+        for commiter in value:
+            output_html += "<tr>\n"
+            output_html += "<td>" + key + "</td>\n"
+            output_html += "<td>" + str(commiter[0]) + "</td>\n"
+            output_html += "<td>" + str(commiter[1]) + "%</td>\n"
+            output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div></div>\n"
 
     output_html += "<div id=\"branches\" class=\"container-fluid slideanim\" align=\"middle\">\n"
