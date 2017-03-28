@@ -158,8 +158,14 @@ def branch_stats():
         com_branchR[remoteB[i].strip()] = int(result[0])
         # Also get branch dates
         res = execute_command("git log --pretty='%cd' " + remoteB[i])
+        first = execute_command("git show-branch --sha1 master " + remoteB[i])
+        first_commit = first[-1]
+        first_sha1 = re.findall(r'\[([^]]*)\]', first_commit)[0]
+        date = execute_command("git show -s --format=%ci "+ first_sha1)[0]
         if res:
-            br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
+            if len(first) is 1:
+                date = res[-1]
+            br_stats['branch_dates_remote'][remoteB[i].strip()] = [date , res[0]]
         else:
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [0,0]
         # Also get branches logs
@@ -195,8 +201,14 @@ def branch_stats():
         com_branchL[localB[i].strip()] = int(result[0])
         # Also get branch dates
         res = execute_command("git log --pretty='%cd' " + localB[i].strip('* '))
+        first = execute_command("git show-branch --sha1 master " + localB[i].strip('* '))
+        first_commit = first[-1]
+        first_sha1 = re.findall(r'\[([^]]*)\]', first_commit)[0]
+        date = execute_command("git show -s --format=%ci "+ first_sha1)[0]
         if res:
-            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
+            if len(first) is 1:
+                date = res[-1]
+            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [date , res[0]]
         else:
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [0, 0]
         # Also get branches logs
