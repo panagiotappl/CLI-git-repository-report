@@ -69,23 +69,43 @@ def committer_stats():
 
     com_stats["commits"] = commits
 
-    com_adds = dict()
-    com_dels = dict()
+    com_adds = {}
+    com_dels = {}
+    com_changes = {}
     # Number of insertions/deletions per committer
     for j in range(0, len(commiters)):
         results = execute_command('git log --all --author="' + commiters[j] + '" --oneline --shortstat')
+        lines_added = 0
+        lines_moddified = 0
+        lines_removed = 0
+        for res in results:
+            am, dm = re.search(r'\d+(?= insertions)', res), re.search(r'\d+(?= deletions)', res)
+            MOD_PATTERN = '^.+(\[-|\{\+).*$'
+            ADD_PATTERN = '^\{\+.*\+\}$'
+            REM_PATTERN = '^\[-.*-\]$'
 
-        adds, dels = 0, 0
-        for i in range(0, len(results)):
-            am, dm = re.search(r'\d+(?= insertions)', results[i]), re.search(r'\d+(?= deletions)', results[i])
-            if am is not None:
-                adds += int(am.group())
-            if dm is not None:
-                dels += int(dm.group())
-        com_adds[commiters[j]] = adds
-        com_dels[commiters[j]] = dels
+
+            if not (am and dm):
+                commit = res.split(' ')[0]
+            if am or dm:
+                dif = execute_command("git diff --word-diff --unified=0 " + commit + " " + commit + "~1")
+                for line in dif:
+                    addsMatch = re.findall(ADD_PATTERN, line)
+                    changesMatch = re.findall(MOD_PATTERN, line)
+                    removedMatch = re.findall(REM_PATTERN, line)
+                    if addsMatch:
+                        lines_added += 1
+                    if changesMatch:
+                        lines_moddified += 1
+                    if removedMatch:
+                        lines_removed += 1
+
+        com_adds[commiters[j]] = lines_added
+        com_dels[commiters[j]] = lines_removed
+        com_changes[commiters[j]] = lines_moddified
     com_stats["adds"] = com_adds
     com_stats["dels"] = com_dels
+    com_stats["changes"] = com_changes
 
     # Percentage of commits per author.
     results = execute_command("git shortlog -sn --all")
@@ -137,7 +157,7 @@ def branch_stats():
         result = execute_command("git rev-list --count" + remoteB[i])
         com_branchR[remoteB[i].strip()] = int(result[0])
         # Also get branch dates
-        res = execute_command("git reflog --pretty='%cd' " + remoteB[i])
+        res = execute_command("git log --pretty='%cd' " + remoteB[i])
         if res:
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
         else:
@@ -174,7 +194,7 @@ def branch_stats():
         result = execute_command("git rev-list --count " + localB[i].strip('* '))
         com_branchL[localB[i].strip()] = int(result[0])
         # Also get branch dates
-        res = execute_command("git reflog --pretty='%cd' " + localB[i].strip('* '))
+        res = execute_command("git log --pretty='%cd' " + localB[i].strip('* '))
         if res:
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
         else:
@@ -307,7 +327,7 @@ def main():
     statistics = analyze()
 
     generate_output(statistics, output_path)
-    print statistics
+    #print statistics
 
 if __name__ == "__main__":
     main()

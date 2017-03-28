@@ -397,17 +397,21 @@ def generate_output(statistics, path):
     output_html += "        <th class=\"header bgtan\" >Author</th>\n"
     output_html += "        <th class=\"header bgtan\" >Insertions</th>\n"
     output_html += "        <th class=\"header bgtan\" >Deletions</th>\n"
+    output_html += "        <th class=\"header bgtan\" >Changes</th>\n"
     output_html += "      </tr>\n"
     output_html += "    </thead>\n"
     output_html += " <tbody>\n"
 
     adds = statistics["com_stats"]["adds"]
     dels = statistics["com_stats"]["dels"]
+    changes = statistics["com_stats"]["changes"]
     for key, value in adds.iteritems():
         output_html += "<tr>\n"
         output_html += "<td>" + key.encode('utf-8').strip() + "</td>\n"
-        output_html += "<td>" + str(adds[key]/statistics["com_stats"]["commits"]) + " (+)</td>\n"
-        output_html += "<td>" + str(dels[key]/statistics["com_stats"]["commits"]) + " (-)</td>\n"
+        output_html += "<td>" + str(adds[key]) + " (+)</td>\n"
+        output_html += "<td>" + str(dels[key]) + " (-)</td>\n"
+        output_html += "<td>" + str(changes[key]) + " </td>\n"
+
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
 
