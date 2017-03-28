@@ -1,5 +1,6 @@
 import os
 import sys
+import plotly
 import re
 import subprocess
 from datetime import datetime
@@ -7,10 +8,10 @@ from output import generate_output
 from itertools import izip
 
 def execute_command(command):
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).stdout
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
     result = process.readlines()
     process.close()
-
+    a = plotly.colors
     return result
 
 
@@ -57,7 +58,6 @@ def committer_stats():
     commiters = []
     for commiter in results:
         commiters.append(commiter.decode("utf-8", "replace").strip())
-    print "Number of committers: ", len(commiters)
 
     com_stats["committers"] = len(commiters)
     # Number of commits
@@ -68,46 +68,59 @@ def committer_stats():
         commits += int(re.findall("\s(\d+)\t", author)[0])
 
     com_stats["commits"] = commits
-    print "Number of commits: ", commits
-    print
 
-    com_adds = dict()
-    com_dels = dict()
+    com_adds = {}
+    com_dels = {}
+    com_changes = {}
     # Number of insertions/deletions per committer
-    print "Number of insertions/deletions per committer:"
     for j in range(0, len(commiters)):
         results = execute_command('git log --all --author="' + commiters[j] + '" --oneline --shortstat')
+        lines_added = 0
+        lines_moddified = 0
+        lines_removed = 0
+        for res in results:
+            am, dm = re.search(r'\d+(?= insertions)', res), re.search(r'\d+(?= deletions)', res)
+            MOD_PATTERN = '^.+(\[-|\{\+).*$'
+            ADD_PATTERN = '^\{\+.*\+\}$'
+            REM_PATTERN = '^\[-.*-\]$'
 
-        adds, dels = 0, 0
-        for i in range(0, len(results)):
-            am, dm = re.search(r'\d+(?= insertions)', results[i]), re.search(r'\d+(?= deletions)', results[i])
-            if am is not None:
-                adds += int(am.group())
-            if dm is not None:
-                dels += int(dm.group())
-        com_adds[commiters[j]] = adds
-        com_dels[commiters[j]] = dels
-        print commiters[j], ": ", adds, " insertions (+), ", dels, " deletions(-)"
-    print
+
+            if not (am and dm):
+                commit = res.split(' ')[0]
+            if am or dm:
+                dif = execute_command("git diff --word-diff --unified=0 " + commit + " " + commit + "~1")
+                for line in dif:
+                    addsMatch = re.findall(ADD_PATTERN, line)
+                    changesMatch = re.findall(MOD_PATTERN, line)
+                    removedMatch = re.findall(REM_PATTERN, line)
+                    if addsMatch:
+                        lines_added += 1
+                    if changesMatch:
+                        lines_moddified += 1
+                    if removedMatch:
+                        lines_removed += 1
+
+        com_adds[commiters[j]] = lines_added
+        com_dels[commiters[j]] = lines_removed
+        com_changes[commiters[j]] = lines_moddified
     com_stats["adds"] = com_adds
     com_stats["dels"] = com_dels
+    com_stats["changes"] = com_changes
 
     # Percentage of commits per author.
     results = execute_command("git shortlog -sn --all")
 
     commits_per_author = dict()
-    print "Percentage of commits per author: "
     for i in range(0, len(results)):
         commits_per_author[results[i].strip().split('\t', 1)[1]] = results[i].strip().split('\t', 1)[0]
 
     for author in commits_per_author:
-        commits_per_author[author] =  round(float(commits_per_author[author]) / float(commits) * 100, 2)
+        commits_per_author[author] = round(float(commits_per_author[author]) / float(commits) * 100, 2)
 
     com_stats["com_per_author"] = commits_per_author
     for i in commits_per_author:
         percentage = float(commits_per_author[i]) / float(commits) * 100
         # Print readable percentage per author.
-        print i, ": ", round(percentage, 2), "%"
 
     return com_stats
 
@@ -124,12 +137,9 @@ def branch_stats():
     br_stats["tags"] = len(tags)
     # Number of branches (local).
     localB = execute_command("git branch")
-    print "Number of branches (local): ", len(localB)
 
     # Number of branches (remote).
     remoteB = execute_command("git branch -r")
-    print "Number of branches (remote): ", len(remoteB) - 1
-    print
 
     br_stats["localCount"] = len(localB)
     br_stats["remoteCount"] = len(remoteB)
@@ -142,16 +152,20 @@ def branch_stats():
 
     com_branchR = dict()
     # Number of commits per branch (remote).
-    print "Number of commits per remote branch: "
     # Ignore first element (HEAD pointer).
     for i in range(1, len(remoteB)):
         result = execute_command("git rev-list --count" + remoteB[i])
         com_branchR[remoteB[i].strip()] = int(result[0])
-        print remoteB[i].strip(), ": ", int(result[0])
         # Also get branch dates
-        res = execute_command("git reflog --pretty='%cd' " + remoteB[i])
+        res = execute_command("git log --pretty='%cd' " + remoteB[i])
+        first = execute_command("git show-branch --sha1 master " + remoteB[i])
+        first_commit = first[-1]
+        first_sha1 = re.findall(r'\[([^]]*)\]', first_commit)[0]
+        date = execute_command("git show -s --format=%ci "+ first_sha1)[0]
         if res:
-            br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
+            if len(first) is 1:
+                date = res[-1]
+            br_stats['branch_dates_remote'][remoteB[i].strip()] = [date , res[0]]
         else:
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [0,0]
         # Also get branches logs
@@ -169,7 +183,6 @@ def branch_stats():
 
                 }
             )
-    print
 
     br_stats["tagsR"] = {}
 
@@ -182,16 +195,20 @@ def branch_stats():
 
     com_branchL = dict()
     # Number of commits per branch (local)
-    print "Number of commits per local branch: "
     for i in range(0, len(localB)):
         # Remove star character for edited local branches
         result = execute_command("git rev-list --count " + localB[i].strip('* '))
         com_branchL[localB[i].strip()] = int(result[0])
-        print localB[i].strip(), ": ", int(result[0])
         # Also get branch dates
-        res = execute_command("git reflog --pretty='%cd' " + localB[i].strip('* '))
+        res = execute_command("git log --pretty='%cd' " + localB[i].strip('* '))
+        first = execute_command("git show-branch --sha1 master " + localB[i].strip('* '))
+        first_commit = first[-1]
+        first_sha1 = re.findall(r'\[([^]]*)\]', first_commit)[0]
+        date = execute_command("git show -s --format=%ci "+ first_sha1)[0]
         if res:
-            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
+            if len(first) is 1:
+                date = res[-1]
+            br_stats['branch_dates_local'][localB[i].strip('* \n')] = [date , res[0]]
         else:
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [0, 0]
         # Also get branches logs
@@ -209,12 +226,11 @@ def branch_stats():
 
                 }
             )
-    print
 
 
     for branch in localB:
         br_stats["tagsR"][branch.strip()] = []
-    tags = execute_command("git tags")
+    tags = execute_command("git tag")
     for tag in tags:
         res = execute_command("git branch --contains tags/"+tag.strip())
         for branch in res:
@@ -225,46 +241,36 @@ def branch_stats():
     com_br_authR = dict()
     # Commit percentage per branch per author (remote)
     # Ignore first element (HEAD pointer).
-    print "Commits per remote branch per author:\n"
     for branch in remoteB[1:]:
         branch_total_commits = execute_command("git rev-list --count " + branch)[0].strip()
         result = execute_command("git shortlog -sn " + branch)
-        print branch.strip() + ": "
         com_br_authR[branch.strip()] = []
         for res in result:
             commits = res.split()[0]
             name = res.split()[1]
-            percentage = float(commits) / float(branch_total_commits) * 100
+            percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
             com_br_authR[branch.strip()].append([name, percentage])
-            print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
-    print
 
     br_stats["com_br_authR"] = com_br_authR
 
     com_br_authL = dict()
     # Commit percentage per branch per author (local)
     # Ignore first element (HEAD pointer).
-    print "Commits per local branch per author:\n"
     for branch in localB:
         branch = branch.strip('* ')
         branch_total_commits = execute_command("git rev-list --count " + branch)[0].strip()
         result = execute_command("git shortlog -sn " + branch)
-        print branch.strip() + ": "
         com_br_authL[branch.strip()] = []
         for res in result:
             commits = res.split()[0]
             name = res.split()[1]
-            percentage = float(commits) / float(branch_total_commits) * 100
+            percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
             com_br_authL[branch.strip()].append([name, percentage])
-            print "\t\t" + name + ": %10.2f" % round(percentage, 2) + "%"
-    print
 
     br_stats["com_br_authL"] = com_br_authL
 
     com_rates = dict()
     # Get mean commit's rate per day, week and month
-    print "Commit rates per day, week and month: "
-    print
     # Find earliest commit.
     earliest_commit = execute_command("git rev-list --max-parents=0 HEAD")
     earliest_commit = execute_command("git show -s --format=%ci " + earliest_commit[0].strip())[0].strip()
@@ -286,27 +292,17 @@ def branch_stats():
         name = res[1]
         com_rates[name] = [round(float(commits) / float(days), 3), round(float(commits) / float(days) * 7, 3),
                            round(float(commits) / float(days) * 30, 3)]
-        print name + " " + str(round(float(commits) / float(days), 3)) + " commits per day."
         # A week is 7 days.
-        print name + " " + str(round(float(commits) / float(days) * 7, 3)) + " commits per week."
         # A month is 30.
-        print name + " " + str(round(float(commits) / float(days) * 30, 3)) + " commits per month."
-        print
-    print
 
     br_stats["com_rates"] = com_rates
 
     return br_stats
 
 
-def main():
-    repo_path = sys.argv[1]
-    output_path = sys.argv[2]
 
-    os.chdir(repo_path)
+def analyze():
 
-
-    execute_command("git rev-parse --is-inside-working-tree")
     statistics = dict()
 
     statistics["gitname"] = repo_name()
@@ -319,9 +315,33 @@ def main():
 
     statistics["br_stats"] = branch_stats()
 
-    generate_output(statistics, output_path)
-    print statistics
+    return statistics
 
+
+def check_validation():
+    result = execute_command("git rev-parse --is-inside-work-tree")
+    if len(result) == 0 or result[0].strip('\n') != "true":
+        print "Not a valid git repository."
+        sys.exit()
+
+
+def main():
+    if len(sys.argv) < 3:
+        print "Missing arguments."
+        print "Usage: java -jar cli.jar <git_repo_path> <html_output_path>"
+        return
+
+    repo_path = sys.argv[1]
+    output_path = sys.argv[2]
+
+    os.chdir(repo_path)
+
+    check_validation()
+
+    statistics = analyze()
+
+    generate_output(statistics, output_path)
+    #print statistics
 
 if __name__ == "__main__":
     main()
