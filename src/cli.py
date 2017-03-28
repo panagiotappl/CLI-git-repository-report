@@ -305,6 +305,8 @@ def main():
 
     os.chdir(repo_path)
 
+
+    execute_command("git rev-parse --is-inside-working-tree")
     statistics = dict()
 
     statistics["gitname"] = repo_name()
