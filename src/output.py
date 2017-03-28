@@ -11,7 +11,7 @@ def generate_head(title, index):
     output_html += "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n"
     output_html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>"
     output_html += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n"
-
+    output_html += "<script scr=\"https://raw.githubusercontent.com/benkeen/d3pie/0.2.1/d3pie/d3pie.min.js\"></script>"
     output_html += "</head>\n"
     output_html += "<style>\n"
     output_html += "    body{\n"
@@ -194,6 +194,78 @@ def generate_branch_history(path, branch_history, type):
         f.close()
 
 
+def generate_piecharts(dictionary, pieChart):
+    output_html = "<script src=\"https://d3js.org/d3.v4.min.js\"></script>"
+    output_html += "<script src=\"https://raw.githubusercontent.com/benkeen/d3pie/0.2.1/d3pie/d3pie.js\"></script>"
+    output_html += "<script> var pie = new d3pie(\"" + pieChart + "\", {"
+
+    output_html += "	\"footer\": {"
+    output_html += "		\"color\": \"#999999\","
+    output_html += "		\"fontSize\": 10,"
+    output_html += "		\"font\": \"open sans\","
+    output_html += "		\"location\": \"bottom-left\""
+    output_html += "	},"
+    output_html += "	\"size\": {"
+    output_html += "		\"canvasWidth\": 590,"
+    output_html += "		\"pieOuterRadius\": \"90%\""
+    output_html += "	},"
+    output_html += "	\"data\": {"
+    output_html += "		\"sortOrder\": \"value-desc\","
+    output_html += "		\"content\": [\n"
+    for key, value in dictionary.iteritems():
+        output_html += "			{"
+        output_html += "				\"label\": \"" + key + "\",\n"
+        output_html += "				\"value\": " + str(value) + ",\n"
+        if dictionary.keys()[-1] == key:
+            output_html += "			}\n"
+        else:
+            output_html += "			},\n"
+
+    output_html += "	},\n"
+    output_html += "	\"labels\": {\n"
+    output_html += "		\"outer\": {\n"
+    output_html += "			\"pieDistance\": 32\n"
+    output_html += "		},\n"
+    output_html += "		\"inner\": {\n"
+    output_html += "			\"hideWhenLessThanPercentage\": 3\n"
+    output_html += "		},\n"
+    output_html += "		\"mainLabel\": {\n"
+    output_html += "			\"fontSize\": 11\n"
+    output_html += "		},\n"
+    output_html += "		\"percentage\": {\n"
+    output_html += "			\"color\": \"#ffffff\",\n"
+    output_html += "			\"decimalPlaces\": 0\n"
+    output_html += "		},\n"
+    output_html += "		\"value\": {\n"
+    output_html += "			\"color\": \"#adadad\",\n"
+    output_html += "			\"fontSize\": 11\n"
+    output_html += "		},\n"
+    output_html += "		\"lines\": {\n"
+    output_html += "			\"enabled\": true\n"
+    output_html += "		},\n"
+    output_html += "		\"truncation\": {\n"
+    output_html += "			\"enabled\": true\n"
+    output_html += "		}\n"
+    output_html += "	},\n"
+    output_html += "	\"effects\": {\n"
+    output_html += "		\"pullOutSegmentOnClick\": {\n"
+    output_html += "			\"effect\": \"linear\",\n"
+    output_html += "			\"speed\": 400,\n"
+    output_html += "			\"size\": 8\n"
+    output_html += "		}\n"
+    output_html += "	},\n"
+    output_html += "	\"misc\": {\n"
+    output_html += "		\"gradient\": {\n"
+    output_html += "			\"enabled\": true,\n"
+    output_html += "			\"percentage\": 100\n"
+    output_html += "		}\n"
+    output_html += "	}\n"
+    output_html += "});\n"
+    output_html += "</script>\n"
+
+    return output_html
+
+
 def generate_output(statistics, path):
     output_html = generate_head("Git Statistics", True)
     output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
@@ -286,7 +358,9 @@ def generate_output(statistics, path):
         output_html += "<td>" + key + "</td>\n"
         output_html += "<td>" + str(value) + "%</td>\n"
         output_html += "</tr>\n"
-    output_html += "</tbody>\n</table>\n</div>\n"
+    output_html += "</tbody>\n</table>\n"
+    output_html += "<div id=\"pieChart\"></div>"
+    output_html += "</div>\n"
 
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Average commits</h2>\n"
@@ -502,6 +576,8 @@ def generate_output(statistics, path):
     output_html += "  })\n;"
     output_html += "})\n"
     output_html += "</script>\n"
+
+    output_html += generate_piecharts(com_auth, "pieChart")
     output_html += "</body>\n"
     output_html += "</html>\n"
 
@@ -513,3 +589,4 @@ def generate_output(statistics, path):
 
     generate_branch_history(path, branch_stats_local, "local")
     generate_branch_history(path, branch_stats_remote, "remote")
+

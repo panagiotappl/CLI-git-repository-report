@@ -1,5 +1,6 @@
 import os
 import sys
+import plotly
 import re
 import subprocess
 from datetime import datetime
@@ -10,7 +11,7 @@ def execute_command(command):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
     result = process.readlines()
     process.close()
-
+    a = plotly.colors
     return result
 
 
