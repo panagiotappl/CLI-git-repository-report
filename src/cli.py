@@ -215,7 +215,7 @@ def branch_stats():
         for res in result:
             commits = res.split()[0]
             name = res.split()[1]
-            percentage = float(commits) / float(branch_total_commits) * 100
+            percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
             com_br_authR[branch.strip()].append([name, percentage])
 
     br_stats["com_br_authR"] = com_br_authR
@@ -231,7 +231,7 @@ def branch_stats():
         for res in result:
             commits = res.split()[0]
             name = res.split()[1]
-            percentage = float(commits) / float(branch_total_commits) * 100
+            percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
             com_br_authL[branch.strip()].append([name, percentage])
 
     br_stats["com_br_authL"] = com_br_authL
@@ -306,7 +306,7 @@ def main():
     statistics = analyze()
 
     generate_output(statistics, output_path)
-
+    print statistics
 
 if __name__ == "__main__":
     main()
