@@ -136,7 +136,7 @@ def branch_stats():
         result = execute_command("git rev-list --count" + remoteB[i])
         com_branchR[remoteB[i].strip()] = int(result[0])
         # Also get branch dates
-        res = execute_command("git reflog --pretty='%cd' " + remoteB[i])
+        res = execute_command("git log --pretty='%cd' " + remoteB[i])
         if res:
             br_stats['branch_dates_remote'][remoteB[i].strip()] = [res[-1] , res[0]]
         else:
@@ -173,7 +173,7 @@ def branch_stats():
         result = execute_command("git rev-list --count " + localB[i].strip('* '))
         com_branchL[localB[i].strip()] = int(result[0])
         # Also get branch dates
-        res = execute_command("git reflog --pretty='%cd' " + localB[i].strip('* '))
+        res = execute_command("git log --pretty='%cd' " + localB[i].strip('* '))
         if res:
             br_stats['branch_dates_local'][localB[i].strip('* \n')] = [res[-1] , res[0]]
         else:
