@@ -196,7 +196,7 @@ def generate_branch_history(path, branch_history, type):
 
 def generate_piecharts(dictionary, pieChart):
     output_html = "<script src=\"https://d3js.org/d3.v4.min.js\"></script>"
-    output_html += "<script src=\"https://raw.githubusercontent.com/benkeen/d3pie/0.2.1/d3pie/d3pie.js\"></script>"
+    output_html += "<script src=\"./d3pie.min.js\"></script>"
     output_html += "<script> var pie = new d3pie(\"" + pieChart + "\", {"
 
     output_html += "	\"footer\": {"
@@ -221,7 +221,7 @@ def generate_piecharts(dictionary, pieChart):
         else:
             output_html += "			},\n"
 
-    output_html += "	},\n"
+    output_html += "	]},\n"
     output_html += "	\"labels\": {\n"
     output_html += "		\"outer\": {\n"
     output_html += "			\"pieDistance\": 32\n"
