@@ -22,8 +22,8 @@ Specificaly for each statistic:
 * Number of tags.
     + By counting the length of `git tag` command.
 
-* Number of commiters.
-    + By using `git log --all --format='%aN'` to filter only the commiters names (``--format='%aN') from commits all across the repo (`-all`)
+* Number of authors.
+    + By using `git log --all --format='%aN'` to filter only the authors names (`--format='%aN'`) from commits all across the repo (`-all`)
     and counting the unique strings of the results.
 
 * Branch statistics table with dates.
@@ -58,4 +58,4 @@ Specificaly for each statistic:
             MOD_PATTERN = '^.+(\[-|\{\+).*$'
             ADD_PATTERN = '^\{\+.*\+\}$'
             REM_PATTERN = '^\[-.*-\]$'
-      ```
+     ```
