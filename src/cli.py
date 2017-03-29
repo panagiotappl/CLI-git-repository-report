@@ -341,7 +341,7 @@ def main():
     statistics = analyze()
 
     generate_output(statistics, output_path)
-    # print statistics
+    print statistics
 
 if __name__ == "__main__":
     main()
