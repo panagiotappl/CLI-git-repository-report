@@ -195,15 +195,15 @@ def generate_branch_history(path, branch_history, type, tags):
             output_html += "      </tr>\n"
             output_html += "    </thead>\n"
             output_html += " <tbody>\n"
-            for j in range(0, len(tags[key.strip("* \n")])):
+            for tag in tags[key.strip("* \n")]:
                 output_html += "<tr>\n"
-                output_html += "<td>" + tags[j] + "</td>\n"
+                output_html += "<td>" + tag + "</td>\n"
 
                 output_html += "</tr>\n"
                 output_html += "</tbody>\n</table>\n</div>\n"
         else:
             output_html += "    <div class=\"row\">\n"
-            output_html += "        <h1>No tags available.</h1>"
+            output_html += "        <h1>No tags available</h1>"
             output_html += "    </div>"
         output_html += "</body>\n"
         output_html += "</html>\n"
