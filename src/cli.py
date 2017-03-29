@@ -1,6 +1,5 @@
 import os
 import sys
-import plotly
 import re
 import subprocess
 from datetime import datetime
@@ -11,7 +10,6 @@ def execute_command(command):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
     result = process.readlines()
     process.close()
-    a = plotly.colors
     return result
 
 
@@ -297,6 +295,18 @@ def branch_stats():
 
     br_stats["com_rates"] = com_rates
 
+
+    # Percentage of commits per branch.
+    # Get all the commits from all branches
+    br_stats["branchCommits"] = {}
+    commits_count = len(execute_command("git rev-list --remotes"))
+    for branch in localB:
+        branch = branch.strip('* ').strip()
+        branch_commits_count = len(execute_command("git log --pretty=format:\"%h\" "+ branch))
+        br_stats["branchCommits"][branch] = str(round(float(branch_commits_count)/float(commits_count)*100,2))
+
+
+    print br_stats["branchCommits"]
     return br_stats
 
 

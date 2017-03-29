@@ -474,13 +474,39 @@ def generate_output(statistics, path):
     for key, value in com_branchL.iteritems():
         output_html += "<tr>\n"
         output_html += "<td>" + key + "</td>\n"
-        output_html += "<td>" + str(value) + " (+)</td>\n"
+        output_html += "<td>" + str(value) + "</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
+
+    # Percentage of commits per branch.
+    branch_per = statistics["br_stats"]["branchCommits"]
+
+
+    output_html += "    <div class=\"row \">\n"
+    output_html += "        <h2>Percentage of commits.</h2>\n"
+    output_html += "    </div>\n"
+    output_html += "    <div class=\"row\">\n"
+    output_html += "         <table class=\"table table-striped\">\n"
+    output_html += "    <thead >\n"
+    output_html += "      <tr>\n"
+    output_html += "        <th class=\"header bgteal\" >Branch</th>\n"
+    output_html += "        <th class=\"header bgteal\" >Percentage of commits</th>\n"
+    output_html += "      </tr>\n"
+    output_html += "    </thead>\n"
+    output_html += " <tbody>\n"
+
+    for key, value in branch_per.iteritems():
+        output_html += "<tr>\n"
+        output_html += "<td>" + key + "</td>\n"
+        output_html += "<td>" + str(value) + " %</td>\n"
+        output_html += "</tr>\n"
+    output_html += "</tbody>\n</table>\n</div>\n"
+
+
+
+
+
     #Percentage of commits per author per branch
-
-
-
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Percentage of commits per author per branch</h2>\n"
     output_html += "    </div>\n"
