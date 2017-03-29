@@ -40,11 +40,14 @@ Specificaly for each statistic:
     * This is done by using `git tag` to get all the tags of the repo and then for each tag `git branch --contains tags/<tag_name>` to identify in which branches the tag appears.
 
 * Number of commits.
+    + By using the `git shortlog --all -s` command to get commits count from all branches.
 
 * Commits percentage per author.
+    + By using the `git shortlog --all -s` command to get commits/author from all branches.
 
 * Commits percentage per branch.
-
+    + By using `git rev-list --remotes` to get all the commits across all branches. Then this is used to calculate percentages per branch.
+      We can identify number of commits per branch using the `git log --pretty=format:"%h" <branch_name>` command.
 * Commits percentage per branch per author.
     + By using `git shortlog -sn <branch_name>` to get number of commits per author per branch (by iterating over the branches).
 

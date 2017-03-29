@@ -40,3 +40,8 @@ Feel free to contribute by cloning this project and submitting a pull request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+
+## Explanation
+
+You can see the  [Explanation.md](explanation.md) for details on stats calculation and other info.
