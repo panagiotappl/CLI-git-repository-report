@@ -186,8 +186,8 @@ def branch_stats():
 
     br_stats["tagsR"] = {}
 
-    for branch in remoteB[1:]:
-        br_stats["tagsR"][branch.strip] = []
+    # for branch in remoteB[1:]:
+    #     br_stats["tagsR"][branch.strip] = []
 
 
 
@@ -229,12 +229,12 @@ def branch_stats():
 
 
     for branch in localB:
-        br_stats["tagsR"][branch.strip()] = []
+        br_stats["tagsR"][branch.strip("* \n")] = []
     tags = execute_command("git tag")
     for tag in tags:
         res = execute_command("git branch --contains tags/"+tag.strip())
         for branch in res:
-            br_stats["tagsR"][branch.strip()].append(tag.strip())
+            br_stats["tagsR"][branch.strip("* \n")].append(tag.strip())
 
     br_stats["com_branchL"] = com_branchL
 
