@@ -185,21 +185,26 @@ def generate_branch_history(path, branch_history, type, tags):
             output_html += "</tr>\n"
         output_html += "</tbody>\n</table>\n</div>\n"
 
-        output_html += "    <div class=\"row\">\n"
-        output_html += "         <table class=\"table table-striped\">\n"
-        output_html += "    <thead >\n"
-        output_html += "      <tr>\n"
-        output_html += "        <th class=\"header bgbrown\" >Tags</th>\n"
+        if len(tags[key.strip("* \n")]) != 0:
+            output_html += "    <div class=\"row\">\n"
+            output_html += "         <table class=\"table table-striped\">\n"
+            output_html += "    <thead >\n"
+            output_html += "      <tr>\n"
+            output_html += "        <th class=\"header bgbrown\" >Tags</th>\n"
 
-        output_html += "      </tr>\n"
-        output_html += "    </thead>\n"
-        output_html += " <tbody>\n"
-        for j in range(0, len(tags)):
-            output_html += "<tr>\n"
-            output_html += "<td>" + tags[j] + "</td>\n"
+            output_html += "      </tr>\n"
+            output_html += "    </thead>\n"
+            output_html += " <tbody>\n"
+            for j in range(0, len(tags[key.strip("* \n")])):
+                output_html += "<tr>\n"
+                output_html += "<td>" + tags[j] + "</td>\n"
 
-            output_html += "</tr>\n"
-        output_html += "</tbody>\n</table>\n</div>\n"
+                output_html += "</tr>\n"
+                output_html += "</tbody>\n</table>\n</div>\n"
+        else:
+            output_html += "    <div class=\"row\">\n"
+            output_html += "        <h1>No tags available.</h1>"
+            output_html += "    </div>"
         output_html += "</body>\n"
         output_html += "</html>\n"
 
@@ -591,5 +596,5 @@ def generate_output(statistics, path):
     branch_stats_local = statistics["br_stats"]["branch_stats_local"]
     # branch_stats_remote = statistics["br_stats"]["branch_stats_remote"]
 
-    generate_branch_history(path, branch_stats_local, "local", )
+    generate_branch_history(path, branch_stats_local, "local", statistics["br_stats"]["tagsR"])
     # generate_branch_history(path, branch_stats_remote, "remote")
