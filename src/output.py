@@ -483,7 +483,7 @@ def generate_output(statistics, path):
 
 
     output_html += "    <div class=\"row \">\n"
-    output_html += "        <h2>Percentage of commits.</h2>\n"
+    output_html += "        <h2>Percentage of commits per branch</h2>\n"
     output_html += "    </div>\n"
     output_html += "    <div class=\"row\">\n"
     output_html += "         <table class=\"table table-striped\">\n"
