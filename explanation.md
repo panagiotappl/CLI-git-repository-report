@@ -1,4 +1,4 @@
-The whole project has been developed in Python 2.7 with the use of d3pie for a cool pie for committers percentages.
+The whole project has been developed in Python 2.7 with the use of d3pie for a cool pie for committers percentages and amcharts barchart.
 
 The stats extraction is done through CLI git commands and python data manipulation techniques.
 

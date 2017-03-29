@@ -305,8 +305,6 @@ def branch_stats():
         branch_commits_count = len(execute_command("git log --pretty=format:\"%h\" "+ branch))
         br_stats["branchCommits"][branch] = str(round(float(branch_commits_count)/float(commits_count)*100,2))
 
-
-    print br_stats["branchCommits"]
     return br_stats
 
 

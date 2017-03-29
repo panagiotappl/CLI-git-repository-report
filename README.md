@@ -26,6 +26,7 @@ Java -jar myapp.jar ./repo ./output
 
 * [Jython](http://www.jython.org/) - Python on JVM.
 * [D3pie](http://d3pie.org/) - Simple, attractive pie charts.
+* [AmCharts](https://www.amcharts.com) - JavaScript Charts & Maps.
 
 ## Contributing
 
