@@ -326,9 +326,40 @@ def generate_barchart(data):
                     
                     <!-- Chart code -->
                     <script>
+                    AmCharts.lazyLoadMakeChart = AmCharts.makeChart;
+
+                    // override makeChart function
+                    AmCharts.makeChart = function(a, b, c) {
+                    
+                      // set scroll events
+                      jQuery(document).on('scroll load touchmove', handleScroll);
+                      jQuery(window).on('load', handleScroll);
+                    
+                      function handleScroll() {
+                        var $ = jQuery;
+                        if (true === b.lazyLoaded)
+                          return;
+                        var hT = $('#' + a).offset().top,
+                          hH = $('#' + a).outerHeight() / 2,
+                          wH = $(window).height(),
+                          wS = $(window).scrollTop();
+                        if (wS > (hT + hH - wH)) {
+                          b.lazyLoaded = true;
+                          AmCharts.lazyLoadMakeChart(a, b, c);
+                          return;
+                        }
+                      }
+                    
+                      // Return fake listener to avoid errors
+                      return {
+                        addListener: function() {}
+                      };
+                    };
+                                        
                     var chart = AmCharts.makeChart( "chartdiv", {
                       "type": "serial",
                       "theme": "light",
+                      "startEffect": "easeOutSine",
                       "dataProvider":
                       """
 
@@ -418,7 +449,8 @@ def generate_barchart(data):
                         "enabled": true
                       }
                     
-                    } );
+                    });
+                    
                     </script>                        				
     """
     return output
