@@ -19,7 +19,7 @@ python ./src/cli.py <repo_directory> <output_directory>
 To run the jmv verion:
 
 ```
-java -jar cli-git.jar <repo_directory> <output_directory>
+java -jar cli-git.jar <repo_dir_path> <output_dir_path>
 ```
 
 ## Built With
