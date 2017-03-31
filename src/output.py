@@ -499,13 +499,16 @@ def generate_output(statistics, path):
     output_html += "</body>\n"
     output_html += "</html_templates>\n"
 
-    f = open(path + "/index.html", 'w')
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    f = open(path + "/index.html", 'w+')
     f.write(output_html)
     f.close()
 
-    if not os.path.exists(path + "/styles"):
-        os.makedirs(path + "/styles")
-    f = open(path + "/styles/style.css", "w")
+    if not os.path.exists(path + "/style"):
+        os.makedirs(path + "/style")
+    f = open(path + "/style/style.css", "w+")
     css_output = generate_template("./styles/style.css")
     f.write(css_output)
     f.close()
