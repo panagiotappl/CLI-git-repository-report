@@ -13,13 +13,13 @@ To run the python version pass two parameters. The first one is the path of the 
 and the second is the destination directory for the output.
 
 ```
-python ./src/cli.py ./repo ./output
+python ./src/cli.py <repo_directory> <output_directory>
 ```
 
 To run the jmv verion:
 
 ```
-Java -jar myapp.jar ./repo ./output
+java -jar cli-git.jar <repo_directory> <output_directory>
 ```
 
 ## Built With
