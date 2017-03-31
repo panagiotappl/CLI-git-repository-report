@@ -10,6 +10,8 @@ def generate_head(title, index):
 
     output_html += "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n"
     output_html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>"
+    output_html += "<script src=\"https://npmcdn.com/particlesjs@2.0.2/dist/particles.min.js\"></script>"
+
     output_html += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n"
     output_html += "</head>\n"
     output_html += "<style>\n"
@@ -238,8 +240,7 @@ def generate_branch_history(path, branch_history, type, tags):
 def generate_piecharts(dictionary, pieChart):
     output_html = "<script type=\"text/javascript\" src=\"http://d3js.org/d3.v4.min.js\" charset=\"utf-8\"></script>\n"
     output_html += "<script src=\"https://rawgit.com/benkeen/d3pie/master/d3pie/d3pie.min.js\">   </script>\n"
-    output_html += "<script> var pie = new d3pie(\"" + pieChart + "\", {\n"
-
+    output_html += "<script> var pie = {\n"
     output_html += "	\"footer\": {\n"
     output_html += "		\"color\": \"#999999\",\n"
     output_html += "		\"fontSize\": 10,\n"
@@ -301,7 +302,19 @@ def generate_piecharts(dictionary, pieChart):
     output_html += "			\"percentage\": 100\n"
     output_html += "		}\n"
     output_html += "	}\n"
-    output_html += "});\n"
+    output_html += "};\n"
+    output_html += """
+                   $(window).scroll(function() {
+                       var hT = $('#pieChart').offset().top,
+                           hH = $('#pieChart').outerHeight(),
+                           wH = $(window).height(),
+                           wS = $(this).scrollTop();
+                       if (wS > (hT+hH-wH)){
+                            new d3pie("pieChart", pie);
+                            $(window).off('scroll')
+                       }
+                    }); 
+                   """
     output_html += "</script>\n"
 
     return output_html
