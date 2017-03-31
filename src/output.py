@@ -1,166 +1,20 @@
-def generate_head(title, index):
+import codecs
+import os
+
+
+def generate_template(path):
     output_html = ""
-    output_html += "<!DOCTYPE html>\n"
-    output_html += "<html lang=\"en\">\n"
-    output_html += "<head>\n"
-    output_html += "<meta charset=\"UTF-8\">\n"
-    output_html += "<title>" + title + "</title>\n"
-    output_html += "<meta charset=\"utf-8\">\n"
-    output_html += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-
-    output_html += "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n"
-    output_html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>"
-    output_html += "<script src=\"https://npmcdn.com/particlesjs@2.0.2/dist/particles.min.js\"></script>"
-
-    output_html += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n"
-    output_html += "</head>\n"
-    output_html += "<style>\n"
-    output_html += "    body{\n"
-    output_html += "        font: 400 15px Lato, sans-serif;\n"
-    output_html += "        background-color: #ddd;\n"
-    output_html += "    }\n"
-    output_html += "    .table>thead>tr>th {\n"
-    output_html += "    border-bottom: none;\n"
-    output_html += "}\n"
-
-    output_html += "    .footer{\n"
-    output_html += "        padding-top: 200px;\n"
-    output_html += "        padding-bottom: 50px;\n"
-    output_html += "    }\n"
-
-    output_html += "    .table>tbody>tr>td {\n"
-    output_html += "    padding: 8px;\n"
-    output_html += "    line-height: 1.42857143;\n"
-    output_html += "    vertical-align: top;\n"
-    output_html += "    border-top: none;\n"
-    output_html += "}\n"
-
-    output_html += "    .panel{\n"
-    output_html += "        padding: 20px;\n"
-    output_html += "        color: white;\n"
-    output_html += "        font-size: 24px;\n"
-
-    output_html += "    }\n"
-    output_html += "     .navbar {\n"
-    output_html += "      margin-bottom: 0;\n"
-    output_html += "      background-color: #2a313d;\n"
-    output_html += "      z-index: 9999;\n"
-    output_html += "      border: 0;\n"
-    output_html += "      font-size: 12px !important;\n"
-    output_html += "      line-height: 1.42857143 !important;\n"
-    output_html += "      letter-spacing: 4px;\n"
-    output_html += "      border-radius: 0;\n"
-    output_html += "      font-family: Montserrat, sans-serif;\n"
-    output_html += "  }\n"
-
-    output_html += "     h2 {\n"
-    output_html += "      font-size: 24px;\n"
-
-    output_html += "      font-weight: 600;\n"
-    output_html += "      margin-bottom: 30px;\n"
-    output_html += "  }\n"
-
-    output_html += "     h1{\n"
-    output_html += "         margin-bottom: 30px;\n"
-    output_html += "     }\n"
-    output_html += "     .jumbotron {\n"
-
-    output_html += "      background-color: #2a313d;\n"
-    output_html += "      color: #fff;\n"
-    output_html += "      padding: 100px 25px;\n"
-    output_html += "      font-family: Montserrat, sans-serif;\n"
-    output_html += "  }\n"
-    output_html += "  .navbar li a, .navbar .navbar-brand {\n"
-    output_html += "      color: #fff !important;\n"
-    output_html += "  }\n"
-    output_html += "  .navbar-nav li a:hover, .navbar-nav li.active a {\n"
-    output_html += "      color: #8fcaeb !important;\n"
-    output_html += "      border-bottom: 1px solid;\n"
-    output_html += "  }\n"
-    output_html += "  .navbar-default .navbar-toggle {\n"
-    output_html += "      border-color: transparent;\n"
-    output_html += "      color: #fff !important;\n"
-    output_html += "  }\n"
-    if index:
-        output_html += "    .container-fluid{\n"
-        output_html += "        margin-left: 25%;\n"
-        output_html += "        margin-right: 25%;\n"
-        output_html += "        padding: 60px 50px;\n"
-        output_html += "    }\n"
-    else:
-        output_html += "    .container-fluid{\n"
-        output_html += "        margin-left: 5%;\n"
-        output_html += "        margin-right: 5%;\n"
-        output_html += "        padding: 60px 50px;\n"
-        output_html += "    }\n"
-    output_html += "    .stat{\n"
-    output_html += "        font-size: 32px;\n"
-    output_html += "    }\n"
-    output_html += "    .bgtan{\n"
-    output_html += "        background-color: tan;\n"
-    output_html += "        border-color: tan;\n"
-    output_html += "    }\n"
-
-    output_html += "    .bgteal{\n"
-    output_html += "        background-color: teal;\n"
-    output_html += "        border-color: teal;\n"
-    output_html += "    }\n"
-
-    output_html += "    .bgbrown{\n"
-    output_html += "        background-color: #b67335;\n"
-    output_html += "        border-color: #b67335;\n"
-    output_html += "    }\n"
-
-    output_html += "    .bglightteal{\n"
-    output_html += "        background-color: #66b9bf;\n"
-    output_html += "        border-color: #66b9bf;\n"
-    output_html += "    }\n"
-
-    output_html += "    .bgdark{\n"
-    output_html += "        background-color: darkslategrey;\n"
-    output_html += "        border-color: darkslategray;\n"
-    output_html += "    }\n"
-
-    output_html += "    .bgdarkbrown{\n"
-    output_html += "        background-color: saddlebrown;\n"
-    output_html += "        border-color: saddlebrown;\n"
-    output_html += "    }\n"
-
-    output_html += "    .header{\n"
-    output_html += "        color: white;\n"
-    output_html += "        border-radius: 8px 8px 0px 0px;\n"
-    output_html += "        border-bottom:none;\n"
-    output_html += "        padding: 2px;\n"
-    output_html += "        text-align: center;\n"
-    output_html += "    }\n"
-
-    output_html += "    table {\n"
-    output_html += "    display: table;\n"
-    output_html += "    border-collapse: separate;\n"
-    output_html += "    border-spacing: 2px;\n"
-
-    output_html += "}\n"
-
-    output_html += "    table {\n"
-    output_html += "        white-space: normal;\n"
-    output_html += "        line-height: normal;\n"
-    output_html += "        font-weight: normal;\n"
-    output_html += "        font-style: normal;\n"
-    output_html += "        text-align: center;\n"
-    output_html += "        font-size: 18px;\n"
-    output_html += "    }\n"
-
-    output_html += "</style>"
-
+    with codecs.open(path, "r", "utf-8") as myfile:
+        output_html = myfile.read()
     return output_html
 
 
 def generate_branch_history(path, branch_history, type, tags):
     for key, value in branch_history.iteritems():
-        output_html = generate_head(key, False)
+        output_html = generate_template("./html_templates/html_head.html")
 
         output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
-        output_html += "<div id=\"general\" class=\"container-fluid cont2\" align=\"middle\">\n"
+        output_html += "<div id=\"history\" class=\"container-fluid cont2\" align=\"middle\">\n"
         output_html += "    <div class=\"row \">\n"
         output_html += "        <h2><a href=\"index.html#branches\"><i class=\"fa fa-arrow-circle-left\" aria-hidden=\"true\"> Go Back</i></a></h2>"
         output_html += "    </div>"
@@ -208,30 +62,7 @@ def generate_branch_history(path, branch_history, type, tags):
             output_html += "        <h1>No tags available</h1>"
             output_html += "    </div>"
 
-        output_html += "<footer class=\"text-center footer\">\n"
-        output_html += "<a href=\"#myPage\" title=\"To Top\"><i class=\"fa fa-arrow-up\" aria-hidden=\"true\" " \
-                       "style=\"font-size:40px; color:#2a313d\"></i> \n"
-        output_html += "  </a>\n"
-        output_html += "</footer>\n"
-        output_html += "</div>\n"
-        output_html += "<script>\n"
-        output_html += "$(document).ready(function(){\n"
-        output_html += "  $(\".navbar a, footer a[href='#myPage'], td a\").on('click', function(event) {\n"
-        output_html += "    if (this.hash !== \"\") {\n"
-        output_html += "      event.preventDefault();\n"
-        output_html += "      var hash = this.hash;\n"
-        output_html += "      $('html, body').animate({\n"
-        output_html += "        scrollTop: $(hash).offset().top\n"
-        output_html += "      }, 900, function(){\n"
-        output_html += "        window.location.hash = hash;\n"
-        output_html += "      });\n"
-        output_html += "    }\n"
-        output_html += "  })\n;"
-        output_html += "})\n"
-        output_html += "</script>\n"
-        output_html += "</body>\n"
-        output_html += "</html>\n"
-
+        output_html += generate_template("./html_templates/html_footer.html")
         f = open(path + "/" + key.strip('* \n').split("/")[-1] + "_" + type + ".html", 'w')
         f.write(output_html)
         f.close()
@@ -313,11 +144,12 @@ def generate_piecharts(dictionary, pieChart):
                             new d3pie("pieChart", pie);
                             $(window).off('scroll')
                        }
-                    }); 
+                    });
                    """
     output_html += "</script>\n"
 
     return output_html
+
 
 def generate_barchart(data):
     output = """
@@ -327,27 +159,27 @@ def generate_barchart(data):
                         width		: 100%;
                         height		: 500px;
                         font-size	: 10px;
-                    }					
+                    }
                     </style>
-                    
+
                     <!-- Resources -->
                     <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
                     <script src="https://www.amcharts.com/lib/3/serial.js"></script>
                     <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
                     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
                     <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-                    
+
                     <!-- Chart code -->
                     <script>
                     AmCharts.lazyLoadMakeChart = AmCharts.makeChart;
 
                     // override makeChart function
                     AmCharts.makeChart = function(a, b, c) {
-                    
+
                       // set scroll events
                       jQuery(document).on('scroll load touchmove', handleScroll);
                       jQuery(window).on('load', handleScroll);
-                    
+
                       function handleScroll() {
                         var $ = jQuery;
                         if (true === b.lazyLoaded)
@@ -362,13 +194,13 @@ def generate_barchart(data):
                           return;
                         }
                       }
-                    
+
                       // Return fake listener to avoid errors
                       return {
                         addListener: function() {}
                       };
                     };
-                                        
+
                     var chart = AmCharts.makeChart( "chartdiv", {
                       "type": "serial",
                       "theme": "light",
@@ -384,49 +216,6 @@ def generate_barchart(data):
         })
     import json
     output += json.dumps(pers)
-    #output += pers
-    outputss = """
-                       [ {
-                        "country": "USA",
-                        "visits": 2025
-                      }, {
-                        "country": "China",
-                        "visits": 1882
-                      }, {
-                        "country": "Japan",
-                        "visits": 1809
-                      }, {
-                        "country": "Germany",
-                        "visits": 1322
-                      }, {
-                        "country": "UK",
-                        "visits": 1122
-                      }, {
-                        "country": "France",
-                        "visits": 1114
-                      }, {
-                        "country": "India",
-                        "visits": 984
-                      }, {
-                        "country": "Spain",
-                        "visits": 711
-                      }, {
-                        "country": "Netherlands",
-                        "visits": 665
-                      }, {
-                        "country": "Russia",
-                        "visits": 580
-                      }, {
-                        "country": "South Korea",
-                        "visits": 443
-                      }, {
-                        "country": "Canada",
-                        "visits": 441
-                      }, {
-                        "country": "Brazil",
-                        "visits": 395
-                      } ]
-                      """
 
     output += """,
                       "valueAxes": [ {
@@ -461,37 +250,19 @@ def generate_barchart(data):
                       "export": {
                         "enabled": true
                       }
-                    
+
                     });
-                    
-                    </script>                        				
+
+                    </script>
     """
     return output
 
 
 def generate_output(statistics, path):
-    output_html = generate_head("Git Statistics", True)
+    output_html = generate_template("./html_templates/html_head.html")
     output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
-    output_html += "<nav class=\"navbar navbar-default navbar-fixed-top\">\n"
-    output_html += "  <div class=\"container\">\n"
-    output_html += "    <div class=\"navbar-header\">\n"
-    output_html += "      <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#myNavbar\">\n"
-    output_html += "        <span class=\"icon-bar\"></span>\n"
-    output_html += "        <span class=\"icon-bar\"></span>\n"
-    output_html += "        <span class=\"icon-bar\"></span>\n"
-    output_html += "      </button>\n"
-    output_html += "      <a class=\"navbar-brand\" href=\"#myPage\">Home</a>\n"
-    output_html += "    </div>\n"
-    output_html += "    <div class=\"collapse navbar-collapse\" id=\"myNavbar\">\n"
-    output_html += "      <ul class=\"nav navbar-nav navbar-right\">\n"
-    output_html += "        <li><a href=\"#general\">GENERAL</a></li>\n"
-    output_html += "        <li><a href=\"#stats\">STATISTICS</a></li>\n"
-    output_html += "          <li><a href=\"#branches\">BRANCHES</a></li>\n"
 
-    output_html += "      </ul>\n"
-    output_html += "    </div>\n"
-    output_html += "  </div>\n"
-    output_html += "</nav>\n"
+    output_html += generate_template("./html_templates/html_navbar.html")
     output_html += "<div class=\"jumbotron text-center\">\n"
     output_html += "  <h1>Git Repository Report</h1>\n"
     output_html += "<p>for\n"
@@ -503,8 +274,9 @@ def generate_output(statistics, path):
     output_html += "    <h1>General</h1>\n"
     output_html += "    <div class=\"row \">\n"
     output_html += "        <div class=\"col-md-6\">\n"
-    output_html += "            <div id=\"p1\" class=\"panel panel-default bgdark\"><div class=\"stat\">" + str(statistics[
-        "file_count"]) + "</div> Files</div>\n"
+    output_html += "            <div id=\"p1\" class=\"panel panel-default bgdark\"><div class=\"stat\">" + str(
+        statistics[
+            "file_count"]) + "</div> Files</div>\n"
     output_html += "        </div>\n"
     output_html += "         <div class=\"col-md-6\">\n"
     output_html += "             <div  id=\"p2\" class=\"panel panel-default bgteal\"><div class=\"stat\">" + \
@@ -643,7 +415,6 @@ def generate_output(statistics, path):
     # Percentage of commits per branch.
     branch_per = statistics["br_stats"]["branchCommits"]
 
-
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Percentage of commits per branch</h2>\n"
     output_html += "    </div>\n"
@@ -666,9 +437,7 @@ def generate_output(statistics, path):
 
     output_html += "<div id=\"chartdiv\"></div>"
 
-
-
-    #Percentage of commits per author per branch
+    # Percentage of commits per author per branch
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Percentage of commits per author per branch</h2>\n"
     output_html += "    </div>\n"
@@ -693,59 +462,10 @@ def generate_output(statistics, path):
             output_html += "<td>" + str(commiter[1]) + "%</td>\n"
             output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div></div>\n"
-    #
-    # output_html += "    <div class=\"row\">\n"
-    # output_html += "         <table class=\"table table-striped\">\n"
-    # output_html += "    <thead >\n"
-    # output_html += "      <tr>\n"
-    # output_html += "        <th class=\"header bgbrown\" >Remote Branch</th>\n"
-    # output_html += "        <th class=\"header bgbrown\" >Author</th>\n"
-    # output_html += "        <th class=\"header bgbrown\" >% of commits</th>\n"
-    # output_html += "      </tr>\n"
-    # output_html += "    </thead>\n"
-    # output_html += " <tbody>\n"
-    #
-    # com_br_authR = statistics["br_stats"]["com_br_authR"]
-    # for key, value in com_br_authR.iteritems():
-    #     for commiter in value:
-    #         output_html += "<tr>\n"
-    #         output_html += "<td>" + key + "</td>\n"
-    #         output_html += "<td>" + str(commiter[0]) + "</td>\n"
-    #         output_html += "<td>" + str(commiter[1]) + "%</td>\n"
-    #         output_html += "</tr>\n"
-    # output_html += "</tbody>\n</table>\n</div></div>\n"
 
     output_html += "<div id=\"branches\" class=\"container-fluid slideanim\" align=\"middle\">\n"
-    # output_html += "    <div class=\"row \">\n"
-    # output_html += "        <h1>Branches</h1>\n"
-    # output_html += "         <p>Click on the link of each branch to see its commit history.\n"
-    # output_html += "    </div>\n"
-    # output_html += "    <div class=\"row \">\n"
-    # output_html += "        <h2>Remote Branches</h2>\n"
-    # output_html += "    </div>\n"
-    # output_html += "    <div class=\"row\">\n"
-    # output_html += "         <table class=\"table table-striped\">\n"
-    # output_html += "    <thead >\n"
-    # output_html += "      <tr>\n"
-    # output_html += "        <th class=\"header bglightteal\" >Branch</th>\n"
-    # output_html += "        <th class=\"header bglightteal\" >Date created</th>\n"
-    # output_html += "        <th class=\"header bglightteal\" >Date modified</th>\n"
-    # output_html += "      </tr>\n"
-    # output_html += "    </thead>\n"
-    # output_html += " <tbody>\n"
 
-    """
-        Remote Branches with dates go here.
-    """
-    #remoteB = statistics["br_stats"]["remoteB"]
     br_stats = statistics["br_stats"]
-    # for i in range(0, len(remoteB)):
-    #     output_html += "<tr>\n"
-    #     output_html += "<td><a href=\"" + remoteB[i].split("/")[-1] + "_remote.html\">" + remoteB[i] + "</a></td>\n"
-    #     output_html += "<td>" + str(br_stats['branch_dates_remote'][remoteB[i].strip()][0]) + "</td>\n"
-    #     output_html += "<td>" + str(br_stats['branch_dates_remote'][remoteB[i].strip()][1]) + "</td>\n"
-    #     output_html += "</tr>\n"
-    # output_html += "</tbody></table></div>\n"
 
     output_html += "    <div class=\"row \">\n"
     output_html += "        <h2>Local Branches</h2>\n"
@@ -761,51 +481,35 @@ def generate_output(statistics, path):
     output_html += "    </thead>\n"
     output_html += " <tbody>\n"
 
-    """
-        Local Branches with dates go here.
-    """
     localB = statistics["br_stats"]["localB"]
     for i in range(0, len(localB)):
         output_html += "<tr>\n"
-        output_html += "<td><a href=\"" + localB[i].strip('* \n').split("/")[-1] + "_local.html\" >" + localB[i] + "</a></td>\n"
+        output_html += "<td><a href=\"" + localB[i].strip('* \n').split("/")[-1] + "_local.html\" >" + localB[
+            i] + "</a></td>\n"
         output_html += "<td>" + str(br_stats['branch_dates_local'][localB[i].strip('* \n')][0]) + "</td>\n"
         output_html += "<td>" + str(br_stats['branch_dates_local'][localB[i].strip('* \n')][1]) + "</td>\n"
         output_html += "</tr>\n"
 
     output_html += "</tbody></table></div></div>\n"
 
-    output_html += "<footer class=\"text-center footer\">\n"
-    output_html += "<a href=\"#myPage\" title=\"To Top\"><i class=\"fa fa-arrow-up\" aria-hidden=\"true\" " \
-                   "style=\"font-size:40px; color:#2a313d\"></i> \n"
-    output_html += "  </a>\n"
-    output_html += "</footer>\n"
-    output_html += "</div>\n"
-    output_html += "<script>\n"
-    output_html += "$(document).ready(function(){\n"
-    output_html += "  $(\".navbar a, footer a[href='#myPage'], td a\").on('click', function(event) {\n"
-    output_html += "    if (this.hash !== \"\") {\n"
-    output_html += "      event.preventDefault();\n"
-    output_html += "      var hash = this.hash;\n"
-    output_html += "      $('html, body').animate({\n"
-    output_html += "        scrollTop: $(hash).offset().top\n"
-    output_html += "      }, 900, function(){\n"
-    output_html += "        window.location.hash = hash;\n"
-    output_html += "      });\n"
-    output_html += "    }\n"
-    output_html += "  })\n;"
-    output_html += "})\n"
-    output_html += "</script>\n"
+    output_html += generate_template("./html_templates/html_footer.html")
 
     output_html += generate_piecharts(com_auth, "pieChart")
     output_html += generate_barchart(branch_per)
     output_html += "</body>\n"
-    output_html += "</html>\n"
+    output_html += "</html_templates>\n"
 
     f = open(path + "/index.html", 'w')
     f.write(output_html)
     f.close()
+
+    if not os.path.exists(path + "/styles"):
+        os.makedirs(path + "/styles")
+    f = open(path + "/styles/style.css", "w")
+    css_output = generate_template("./styles/style.css")
+    f.write(css_output)
+    f.close()
+
     branch_stats_local = statistics["br_stats"]["branch_stats_local"]
-    # branch_stats_remote = statistics["br_stats"]["branch_stats_remote"]
 
     generate_branch_history(path, branch_stats_local, "local", statistics["br_stats"]["tagsR"])
-    # generate_branch_history(path, branch_stats_remote, "remote")

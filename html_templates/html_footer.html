@@ -1,0 +1,20 @@
+<footer class="text-center footer">
+<a href="#myPage" title="To Top"><i class="fa fa-arrow-up" aria-hidden="true" style="font-size:40px; color:#2a313d"></i>
+  </a>
+</footer>
+</div>
+<script>
+$(document).ready(function(){
+  $(".navbar a, footer a[href='#myPage'], td a").on('click', function(event) {
+    if (this.hash !== "") {
+      event.preventDefault();
+      var hash = this.hash;
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 900, function(){
+        window.location.hash = hash;
+      });
+    }
+  })
+;})
+</script>
