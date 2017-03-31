@@ -1,6 +1,7 @@
 # Git repository report
 
 A git analyzer that produces beautiful and readable statistics for a git repo in HTML format.
+This project has been developed for the needs of the "Software Engineering" course of the University of Athens.
 
 ## Getting Started
 
