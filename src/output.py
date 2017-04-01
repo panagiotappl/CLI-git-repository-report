@@ -1,17 +1,221 @@
-import codecs
 import os
 
 
-def generate_template(path):
-    output_html = ""
-    with codecs.open(path, "r", "utf-8") as myfile:
-        output_html = myfile.read()
+def generate_footer():
+    output_html = """
+    <footer class="text-center footer">
+        <a href="#myPage" title="To Top"><i class="fa fa-arrow-up" aria-hidden="true" style="font-size:40px; color:#2a313d"></i>
+    </a>
+    </footer>
+    </div>
+    <script>
+    $(document).ready(function(){
+    $(".navbar a, footer a[href='#myPage'], td a").on('click', function(event) {
+        if (this.hash !== "") {
+        event.preventDefault();
+        var hash = this.hash;
+        $('html, body').animate({
+            scrollTop: $(hash).offset().top
+        }, 900, function(){
+            window.location.hash = hash;
+        });
+        }
+    })
+    ;})
+    </script>
+    """
+    return output_html
+
+
+def generate_navbar():
+    output_html = """
+        <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#myPage">Home</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+            <li><a href="#general">GENERAL</a></li>
+            <li><a href="#stats">STATISTICS</a></li>
+              <li><a href="#branches">BRANCHES</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>"""
+    return output_html
+
+
+def generate_head():
+    output_html = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Git Statistics</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./style/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://npmcdn.com/particlesjs@2.0.2/dist/particles.min.js"></script>
+    </head>
+    <style>
+body{
+    font: 400 15px Lato, sans-serif;
+    background-color: #ddd;
+}
+
+.table>thead>tr>th {
+    border-bottom: none;
+}
+
+.footer{
+    padding-top: 200px;
+    padding-bottom: 50px;
+   }
+
+.table>tbody>tr>td {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: none;
+}
+
+.panel{
+    padding: 20px;
+    color: white;
+    font-size: 24px;
+}
+
+.navbar {
+    margin-bottom: 0;
+    background-color: #2a313d;
+    z-index: 9999;
+    border: 0;
+    font-size: 12px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: Montserrat, sans-serif;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+h1{
+    margin-bottom: 30px;
+
+}
+
+
+.jumbotron {
+    background-color: #2a313d;
+    color: #fff;
+    padding: 100px 25px;
+    font-family: Montserrat, sans-serif;
+}
+
+.navbar li a, .navbar .navbar-brand {
+    color: #fff !important;
+}
+
+.navbar-nav li a:hover, .navbar-nav li.active a {
+      color: #8fcaeb !important;
+      border-bottom: 1px solid;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+}
+
+.container-fluid{
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 60px 50px;
+}
+
+#history.container-fluid{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.stat{
+    font-size: 32px;
+}
+
+.bgtan{
+    background-color: tan;
+    border-color: tan;
+}
+
+.bgteal{
+    background-color: teal;
+    border-color: teal;
+}
+
+.bgbrown{
+    background-color: #b67335;
+    border-color: #b67335;
+}
+
+.bglightteal{
+    background-color: #66b9bf;
+    border-color: #66b9bf;
+}
+
+.bgdark{
+    background-color: darkslategrey;
+    border-color: darkslategray;
+}
+
+.bgdarkbrown {
+    background-color: saddlebrown;
+    border-color: saddlebrown;
+}
+
+.header{
+    color: white;
+    border-radius: 8px 8px 0px 0px;
+    border-bottom:none;
+    padding: 2px;
+    text-align: center;
+}
+
+table {  display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+
+table {
+    white-space: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-style: normal;
+    text-align: center;
+    font-size: 18px;
+}
+</style>
+
+    """
     return output_html
 
 
 def generate_branch_history(path, branch_history, type, tags):
     for key, value in branch_history.iteritems():
-        output_html = generate_template("./html_templates/html_head.html")
+        output_html = generate_head()
 
         output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
         output_html += "<div id=\"history\" class=\"container-fluid cont2\" align=\"middle\">\n"
@@ -62,7 +266,7 @@ def generate_branch_history(path, branch_history, type, tags):
             output_html += "        <h1>No tags available</h1>"
             output_html += "    </div>"
 
-        output_html += generate_template("./html_templates/html_footer.html")
+        output_html += generate_footer()
         f = open(path + "/" + key.strip('* \n').split("/")[-1] + "_" + type + ".html", 'w')
         f.write(output_html)
         f.close()
@@ -259,10 +463,10 @@ def generate_barchart(data):
 
 
 def generate_output(statistics, path):
-    output_html = generate_template("./html_templates/html_head.html")
+    output_html = generate_head()
     output_html += "<body id=\"myPage\" data-spy=\"scroll\" data-target=\".navbar\" data-offset=\"60\">\n"
 
-    output_html += generate_template("./html_templates/html_navbar.html")
+    output_html += generate_navbar()
     output_html += "<div class=\"jumbotron text-center\">\n"
     output_html += "  <h1>Git Repository Report</h1>\n"
     output_html += "<p>for\n"
@@ -492,7 +696,7 @@ def generate_output(statistics, path):
 
     output_html += "</tbody></table></div></div>\n"
 
-    output_html += generate_template("./html_templates/html_footer.html")
+    output_html += generate_footer()
 
     output_html += generate_piecharts(com_auth, "pieChart")
     output_html += generate_barchart(branch_per)
@@ -506,12 +710,7 @@ def generate_output(statistics, path):
     f.write(output_html)
     f.close()
 
-    if not os.path.exists(path + "/style"):
-        os.makedirs(path + "/style")
-    f = open(path + "/style/style.css", "w+")
-    css_output = generate_template("./styles/style.css")
-    f.write(css_output)
-    f.close()
+
 
     branch_stats_local = statistics["br_stats"]["branch_stats_local"]
 
