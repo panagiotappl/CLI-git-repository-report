@@ -330,7 +330,7 @@ def generate_output(statistics, path):
     com_auth = statistics["com_stats"]["com_per_author"]
     for key, value in com_auth.iteritems():
         output_html += "<tr>\n"
-        output_html += "<td>" + key + "</td>\n"
+        output_html += "<td>" + key.decode('utf-8') + "</td>\n"
         output_html += "<td>" + str(value) + "%</td>\n"
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n"
@@ -382,11 +382,11 @@ def generate_output(statistics, path):
     changes = statistics["com_stats"]["changes"]
     for key, value in adds.iteritems():
         output_html += "<tr>\n"
+        output_html += "<td>" + key.decode('utf-8').strip() + "</td>\n"
         output_html += "<td>" + key.encode('utf-8').strip() + "</td>\n"
         output_html += "<td>" + str(adds[key]) + " (+)</td>\n"
         output_html += "<td>" + str(dels[key]) + " (-)</td>\n"
         output_html += "<td>" + str(changes[key]) + " </td>\n"
-
         output_html += "</tr>\n"
     output_html += "</tbody>\n</table>\n</div>\n"
 

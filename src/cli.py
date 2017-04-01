@@ -6,10 +6,15 @@ from datetime import datetime
 from output import generate_output
 from itertools import izip
 
+repo_path = ""
+owd = ""
+
 def execute_command(command):
+    os.chdir(repo_path)
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
     result = process.readlines()
     process.close()
+    os.chdir(owd)
     return result
 
 
@@ -91,12 +96,13 @@ def committer_stats():
                     addsMatch = re.findall(ADD_PATTERN, line)
                     changesMatch = re.findall(MOD_PATTERN, line)
                     removedMatch = re.findall(REM_PATTERN, line)
+
                     if addsMatch:
-                        lines_added += 1
+                        lines_added += len(addsMatch)
                     if changesMatch:
-                        lines_moddified += 1
+                        lines_moddified += len(changesMatch)
                     if removedMatch:
-                        lines_removed += 1
+                        lines_removed += len(removedMatch)
 
         com_adds[commiters[j]] = lines_added
         com_dels[commiters[j]] = lines_removed
@@ -109,8 +115,9 @@ def committer_stats():
     results = execute_command("git shortlog -sn --all")
 
     commits_per_author = dict()
-    for i in range(0, len(results)):
-        commits_per_author[results[i].strip().split('\t', 1)[1]] = results[i].strip().split('\t', 1)[0]
+    for author in results:
+        if len(author.strip().split('\t', 1)) is 2:
+            commits_per_author[author.strip().split('\t', 1)[1]] = author.strip().split('\t', 1)[0]
 
     for author in commits_per_author:
         commits_per_author[author] = round(float(commits_per_author[author]) / float(commits) * 100, 2)
@@ -244,10 +251,11 @@ def branch_stats():
         result = execute_command("git shortlog -sn " + branch)
         com_br_authR[branch.strip()] = []
         for res in result:
-            commits = res.split()[0]
-            name = res.split()[1]
-            percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
-            com_br_authR[branch.strip()].append([name, percentage])
+            if len(res) is 2:
+                commits = res.split()[0]
+                name = res.split()[1]
+                percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
+                com_br_authR[branch.strip()].append([name, percentage])
 
     br_stats["com_br_authR"] = com_br_authR
 
@@ -260,10 +268,11 @@ def branch_stats():
         result = execute_command("git shortlog -sn " + branch)
         com_br_authL[branch.strip()] = []
         for res in result:
-            commits = res.split()[0]
-            name = res.split()[1]
-            percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
-            com_br_authL[branch.strip()].append([name, percentage])
+            if len(res.split('\t', 1)) is 2:
+                commits = res.split('\t', 1)[0]
+                name = res.split('\t', 1)[1]
+                percentage = round(float(commits) / float(branch_total_commits) * 100, 2)
+                com_br_authL[branch.strip()].append([name, percentage])
 
     br_stats["com_br_authL"] = com_br_authL
 
@@ -284,14 +293,15 @@ def branch_stats():
     results = execute_command("git shortlog -sn --all")
 
     for res in results:
-        res = res.strip()
-        res = res.split('\t')
-        commits = res[0]
-        name = res[1]
-        com_rates[name] = [round(float(commits) / float(days), 3), round(float(commits) / float(days) * 7, 3),
-                           round(float(commits) / float(days) * 30, 3)]
-        # A week is 7 days.
-        # A month is 30.
+        if len(res) is 2:
+            res = res.strip()
+            res = res.split('\t')
+            commits = res[0]
+            name = res[1]
+            com_rates[name] = [round(float(commits) / float(days), 3), round(float(commits) / float(days) * 7, 3),
+                               round(float(commits) / float(days) * 30, 3)]
+            # A week is 7 days.
+            # A month is 30.
 
     br_stats["com_rates"] = com_rates
 
@@ -332,17 +342,17 @@ def check_validation():
         print "Not a valid git repository."
         sys.exit()
 
-
 def main():
     if len(sys.argv) < 3:
         print "Missing arguments."
         print "Usage: java -jar cli.jar <git_repo_path> <html_output_path>"
         return
 
+    global repo_path
     repo_path = sys.argv[1]
+    global owd
+    owd = os.getcwd()
     output_path = sys.argv[2]
-
-    os.chdir(repo_path)
 
     check_validation()
 
@@ -350,6 +360,5 @@ def main():
 
     generate_output(statistics, output_path)
 
-    
-if __name__ == "__main__":
-    main()
+
+main()
