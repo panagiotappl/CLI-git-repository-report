@@ -14,10 +14,10 @@ To run the python version pass two parameters. The first one is the path of the 
 and the second is the destination directory for the output.
 
 ```
-python ./src/cli.py <repo_directory> <output_directory>
+python ./src/cli.py <repo_dir_path> <output_dir_path>
 ```
 
-To run the jmv verion:
+To run the jvm version:
 
 ```
 java -jar cli-git.jar <repo_dir_path> <output_dir_path>
@@ -35,7 +35,7 @@ Feel free to contribute by cloning this project and submitting a pull request.
 
 ## Authors
 
-* **Panagiota Poulopolou** - *University of Athens*
+* **Panagiota Poulopoulou** - *University of Athens*
 * **Panos Paparrigopoulos** - *University of Athens*
 
 

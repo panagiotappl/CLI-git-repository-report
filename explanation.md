@@ -1,3 +1,5 @@
+## About 
+
 The whole project has been developed in Python 2.7 with the use of d3pie for a cool pie for committers percentages and amcharts barchart.
 
 The stats extraction is done through CLI git commands and python data manipulation techniques.
@@ -62,3 +64,11 @@ Specificaly for each statistic:
             ADD_PATTERN = '^\{\+.*\+\}$'
             REM_PATTERN = '^\[-.*-\]$'
      ```
+     
+  ### About Jython
+  
+ The cli-git.jar file is a modification of the Jython library standalone .jar file that executes the cli-git program. One can also run the python files on JVM by using the standard standalone jython jar found online on the official website as:
+ 
+   ```
+        java -jar jython-standalone-2.x.x.jar cli.py <repo_dir_path> <output_dir_path>
+   ```

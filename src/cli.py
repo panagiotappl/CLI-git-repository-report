@@ -9,6 +9,7 @@ from itertools import izip
 repo_path = ""
 owd = ""
 
+
 def execute_command(command):
     os.chdir(repo_path)
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
@@ -318,7 +319,6 @@ def branch_stats():
     return br_stats
 
 
-
 def analyze():
 
     statistics = dict()
@@ -341,6 +341,7 @@ def check_validation():
     if len(result) == 0 or result[0].strip('\n') != "true":
         print "Not a valid git repository."
         sys.exit()
+
 
 def main():
     if len(sys.argv) < 3:
