@@ -587,7 +587,6 @@ def generate_output(statistics, path):
     for key, value in adds.iteritems():
         output_html += "<tr>\n"
         output_html += "<td>" + key.decode('utf-8').strip() + "</td>\n"
-        output_html += "<td>" + key.encode('utf-8').strip() + "</td>\n"
         output_html += "<td>" + str(adds[key]) + " (+)</td>\n"
         output_html += "<td>" + str(dels[key]) + " (-)</td>\n"
         output_html += "<td>" + str(changes[key]) + " </td>\n"
